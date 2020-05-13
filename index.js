@@ -12,14 +12,16 @@
 
 (async () => {
 
-    console.log("Hello, world!");
+    /* Find posts and comments */
 
-    /* Step 1 */
+    /* Generate images (1) */
+    
+    /* Generate text-to-speech (2) */
+    
+    /* Create videoclips with (1) and (2) */
 
-    /* Step 2 */
-    
-    /* Step 3 */
-    
-    /* Step 4 */
+    /* Merge clips */
+
+    /* Upload to Youtube */
 
 })();
