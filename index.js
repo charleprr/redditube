@@ -10,21 +10,26 @@
 
 /* Import modules */
 const RedditManager = require("./modules/RedditManager.js");
+const SpriteUtility = require("./modules/SpriteUtility.js");
+const SoundUtility = require("./modules/SoundUtility.js");
+const VideoUtility = require("./modules/VideoUtility.js");
 
 /* Settings */
 const subreddit = "r/askreddit";
 
 /* Variables */
-let post;
-let comments;
+let sprites = [];
+let sounds = [];
 
 (async () => {
 
     /* Find posts and comments */
-    post = await RedditManager.getPost(subreddit, sort="top", time="all");
-    comments = await RedditManager.getComments(subreddit, post.id, 3, sort="top", time="all");
+    let post = await RedditManager.fetchPost(subreddit);
+    let comments = await RedditManager.fetchComments(subreddit, post.id, 3);
 
-    /* Generate images (1) */
+    /* Generate sprites (1) */
+    sprites.push(await SpriteUtility.createPostSprite(post));
+    for (let comment of comments) await sprites.push(SpriteUtility.createCommentSprite(comment));
     
     /* Generate text-to-speech (2) */
     
@@ -34,4 +39,5 @@ let comments;
 
     /* Upload to Youtube */
 
+    console.log(sprites.length);
 })();

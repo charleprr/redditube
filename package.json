@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/charlypoirier/redditube#readme",
   "dependencies": {
+    "canvas": "^2.6.1",
     "get-json": "^1.0.1"
   }
 }
