@@ -24,7 +24,7 @@ let sounds = [];
 (async () => {
 
     /* Find posts and comments */
-    let post = await RedditManager.fetchPost(subreddit);
+    let post = await RedditManager.fetchPost(subreddit, sort="top", time="all");
     let comments = await RedditManager.fetchComments(subreddit, post.id, 3);
 
     /* Generate sprites (1) */

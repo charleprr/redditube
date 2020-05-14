@@ -5,7 +5,7 @@
 const getJSON = require("get-json");
 
 let fetchPost = (subreddit, sort="top", time="all") => {
-    console.log("Getting a post.");
+    console.log("Fetching post...");
     return new Promise((resolve, reject) => {
         getJSON(`https://www.reddit.com/${subreddit}/${sort}.json?&t=${time}&limit=1`, (e, res) => {
             if (e) reject(e);
@@ -15,7 +15,7 @@ let fetchPost = (subreddit, sort="top", time="all") => {
 }
 
 let fetchComments = (subreddit, post_id, n, sort="top", time="all") => {
-    console.log("Getting comments.");
+    console.log("Fetching comments...");
     return new Promise((resolve, reject) => {
         getJSON(`https://www.reddit.com/${subreddit}/comments/${post_id}/${sort}.json?t=${time}`, (e, res) => {
             if (e) reject(e);

@@ -1,3 +1,10 @@
+# Media
+media/sounds/*.wav
+media/sounds/*.mp3
+media/sprites/*.png
+media/videos/*.mp4
+media/videos/*.avi
+
 # Logs
 logs
 *.log
