@@ -9,10 +9,20 @@
 */
 
 /* Import modules */
+const RedditManager = require("./modules/RedditManager.js");
+
+/* Settings */
+const subreddit = "r/askreddit";
+
+/* Variables */
+let post;
+let comments;
 
 (async () => {
 
     /* Find posts and comments */
+    post = await RedditManager.getPost(subreddit, sort="top", time="all");
+    comments = await RedditManager.getComments(subreddit, post.id, 3, sort="top", time="all");
 
     /* Generate images (1) */
     

@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/charlypoirier/redditube/issues"
   },
-  "homepage": "https://github.com/charlypoirier/redditube#readme"
+  "homepage": "https://github.com/charlypoirier/redditube#readme",
+  "dependencies": {
+    "get-json": "^1.0.1"
+  }
 }
