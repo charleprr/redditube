@@ -38,6 +38,5 @@ let sounds = [];
     /* Merge clips */
 
     /* Upload to Youtube */
-
-    console.log(sprites.length);
+    
 })();
