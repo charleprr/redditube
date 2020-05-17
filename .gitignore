@@ -1,9 +1,8 @@
 # Media
-media/sounds/*.wav
-media/sounds/*.mp3
-media/sprites/*.png
-media/videos/*.mp4
-media/videos/*.avi
+media/voices/*.mp3
+media/images/*.png
+media/clips/*.mp4
+media/*.mp4
 
 # Logs
 logs

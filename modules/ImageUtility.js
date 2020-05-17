@@ -4,32 +4,39 @@
 const { createCanvas, registerFont, loadImage } = require('canvas');
 const fs = require('fs');
 
-
 registerFont('./fonts/IBMPlexSans-Medium.ttf', {family: 'IBMPlexSans Medium'});
 registerFont('./fonts/IBMPlexSans-Regular.ttf', {family: 'IBMPlexSans Regular'});
+registerFont('./fonts/NotoSans-Regular.ttf', {family: 'Noto Sans'});
 
 let wrapText = (ctx, text, x, y, maxWidth, lineHeight) => {
-    let words = text.split(' ');
-    let line = '';
-    for(let n = 0; n < words.length; ++n) {
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        let testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-            ctx.fillText(line, x, y);
-            line = words[n] + ' ';
-            y += lineHeight;
-        } else line = testLine;
+    text = text.split("\n");
+    for (let paragraph of text) {
+        let words = paragraph.split(" ");
+        let line = "";
+        for (let word of words) {
+            line = line + word + " ";
+            if (ctx.measureText(line).width > maxWidth) {
+                ctx.fillText(line, x, y);
+                y += lineHeight;
+                line = "";
+            }
+        }
+        ctx.fillText(line, x, y);
+        y += lineHeight;
     }
-    ctx.fillText(line, x, y);
 }
 
 let kFormatter = (num) => {
     return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num);
 }
 
-let createPostSprite = (post) => {
-    let filepath = `./media/sprites/${post.id}.png`;
+let generateImages = async (post, comments, path) => {
+    await generatePostImage(post, path);
+    comments.forEach(async comment => await generateCommentImage(comment, path));
+}
+
+let generatePostImage = (post, path) => {
+    let filepath = `${path}/${post.id}.png`;
     console.log(`Generating ${filepath}`);
     return new Promise(async (resolve, reject) => {
         const canvas = createCanvas(1920, 1080);
@@ -46,8 +53,8 @@ let createPostSprite = (post) => {
         let textWidth = ctx.measureText(upvotes).width;
         ctx.fillText(upvotes , (canvas.width/2) - (textWidth / 2) - 526, 402);
         const up = await loadImage('./media/up.png');
-        ctx.drawImage(up, 418, 323, 32, 36);
         const down = await loadImage('./media/down.png');
+        ctx.drawImage(up, 418, 323, 32, 36);
         ctx.drawImage(down, 418, 423, 32, 36);
 
         // Author
@@ -58,7 +65,7 @@ let createPostSprite = (post) => {
         // Title
         ctx.font = '48px IBMPlexSans Medium';
         ctx.fillStyle = '#D7DADC';
-        wrapText(ctx, post.title, (canvas.width-900)/2, 400, 1000, 58);
+        wrapText(ctx, post.title, (canvas.width-900)/2, 400, 850, 58);
 
         // Saving as a PNG file
         const out = fs.createWriteStream(filepath);
@@ -68,12 +75,39 @@ let createPostSprite = (post) => {
     });
 }
 
-let createCommentSprite = (comment) => {
-    let filepath = `./media/sprites/${comment.data.id}.png`;
+let generateCommentImage = (comment, path) => {
+    let filepath = `${path}/${comment.id}.png`;
     console.log(`Generating ${filepath}`);
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const canvas = createCanvas(1920, 1080);
         const ctx = canvas.getContext("2d");
+        
+        // Background
+        ctx.fillStyle = '#1B191D';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Upvote arrows
+        const up = await loadImage('./media/up.png');
+        const down = await loadImage('./media/down.png');
+        ctx.drawImage(up, 200, 143, 32, 36);
+        ctx.drawImage(down, 200, 193, 32, 36);
+
+        // Author
+        ctx.font = '24px IBMPlexSans Regular';
+        ctx.fillStyle = '#D7DADC';
+        let author = comment.author;
+        ctx.fillText(author, 270, 163);
+
+        // Points
+        ctx.font = '24px IBMPlexSans Regular';
+        ctx.fillStyle = '#818384';
+        let upvotes = `${kFormatter(comment.ups)} points`;
+        ctx.fillText(upvotes, 277 + ctx.measureText(author).width, 163);
+
+        // Comment
+        ctx.font = '30px Noto Sans';
+        ctx.fillStyle = '#D7DADC';
+        wrapText(ctx, comment.body, 270, 215, 1300, 40);
 
         // Saving as a PNG file
         const out = fs.createWriteStream(filepath);
@@ -84,6 +118,5 @@ let createCommentSprite = (comment) => {
 }
 
 module.exports = {
-    createPostSprite: createPostSprite,
-    createCommentSprite: createCommentSprite
+    generateImages: generateImages
 };

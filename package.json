@@ -23,7 +23,11 @@
   },
   "homepage": "https://github.com/charlypoirier/redditube#readme",
   "dependencies": {
+    "@google-cloud/text-to-speech": "^2.3.0",
     "canvas": "^2.6.1",
-    "get-json": "^1.0.1"
+    "get-json": "^1.0.1",
+    "util": "^0.12.3",
+    "video-stitch": "^1.6.0",
+    "videoshow": "^0.1.12"
   }
 }
