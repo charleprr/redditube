@@ -26,6 +26,7 @@
     "@google-cloud/text-to-speech": "^2.3.0",
     "canvas": "^2.6.1",
     "get-json": "^1.0.1",
+    "mp3-duration": "^1.1.0",
     "util": "^0.12.3",
     "video-stitch": "^1.6.0",
     "videoshow": "^0.1.12"

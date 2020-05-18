@@ -1,8 +1,5 @@
-# Media
-media/voices/*.mp3
-media/images/*.png
-media/clips/*.mp4
-media/*.mp4
+# Temporary resources
+temporary/*
 
 # Logs
 logs

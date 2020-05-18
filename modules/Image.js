@@ -1,12 +1,9 @@
-/**
- * 
- */
 const { createCanvas, registerFont, loadImage } = require('canvas');
 const fs = require('fs');
 
-registerFont('./fonts/IBMPlexSans-Medium.ttf', {family: 'IBMPlexSans Medium'});
-registerFont('./fonts/IBMPlexSans-Regular.ttf', {family: 'IBMPlexSans Regular'});
-registerFont('./fonts/NotoSans-Regular.ttf', {family: 'Noto Sans'});
+registerFont('./resources/IBMPlexSans-Medium.ttf', {family: 'IBMPlexSans Medium'});
+registerFont('./resources/IBMPlexSans-Regular.ttf', {family: 'IBMPlexSans Regular'});
+registerFont('./resources/NotoSans-Regular.ttf', {family: 'Noto Sans'});
 
 let wrapText = (ctx, text, x, y, maxWidth, lineHeight) => {
     text = text.split("\n");
@@ -24,15 +21,13 @@ let wrapText = (ctx, text, x, y, maxWidth, lineHeight) => {
         ctx.fillText(line, x, y);
         y += lineHeight;
     }
+    return y;
 }
 
 let kFormatter = (num) => {
-    return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num);
-}
-
-let generateImages = async (post, comments, path) => {
-    await generatePostImage(post, path);
-    comments.forEach(async comment => await generateCommentImage(comment, path));
+    return Math.abs(num) > 999
+    ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k'
+    : Math.sign(num)*Math.abs(num);
 }
 
 let generatePostImage = (post, path) => {
@@ -52,8 +47,8 @@ let generatePostImage = (post, path) => {
         let upvotes = kFormatter(post.ups);
         let textWidth = ctx.measureText(upvotes).width;
         ctx.fillText(upvotes , (canvas.width/2) - (textWidth / 2) - 526, 402);
-        const up = await loadImage('./media/up.png');
-        const down = await loadImage('./media/down.png');
+        const up = await loadImage('./resources/up.png');
+        const down = await loadImage('./resources/down.png');
         ctx.drawImage(up, 418, 323, 32, 36);
         ctx.drawImage(down, 418, 423, 32, 36);
 
@@ -87,8 +82,8 @@ let generateCommentImage = (comment, path) => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Upvote arrows
-        const up = await loadImage('./media/up.png');
-        const down = await loadImage('./media/down.png');
+        const up = await loadImage('./resources/up.png');
+        const down = await loadImage('./resources/down.png');
         ctx.drawImage(up, 200, 143, 32, 36);
         ctx.drawImage(down, 200, 193, 32, 36);
 
@@ -118,5 +113,11 @@ let generateCommentImage = (comment, path) => {
 }
 
 module.exports = {
-    generateImages: generateImages
+    generate: (post, comments) => {
+        return new Promise(async resolve => {
+            await generatePostImage(post);
+            for (let comment of comments) await generateCommentImage(comment);
+            resolve();
+        });
+    }
 };

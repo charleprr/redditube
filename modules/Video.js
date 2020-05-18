@@ -13,21 +13,16 @@ const configuration = {
 	outputOptions: ["-pix_fmt yuv420p"]
 }
 const videoStitch = require("video-stitch").concat;
+const mp3Duration = require('mp3-duration');
 
-let generateClips = (post, comments, path) => {
-	return new Promise(async (resolve, reject) => {
-		await generateClip(post.id, path);
-		for (let comment of comments)
-			await generateClip(comment.id, path);
-		resolve();
-	});
-}
-
-let generateClip = (id, path) => {
+let generateClip = async (id, path) => {
 	let image = `./media/images/${id}.png`;
 	let voice = `./media/voices/${id}.mp3`;
 	let output = `${path}/${id}.mp4`;
 	console.log(`Generating ${output}`);
+	let duration = await mp3Duration(voice);
+	console.log(duration);
+	configuration.loop = duration;
 	return new Promise((resolve, reject) => {
 		videoShow([image], configuration).audio(voice).save(output)
 		.on("error", (error, stdout, stderr) => {
@@ -58,15 +53,22 @@ let mergeClips = (post, comments, path) => {
 	});
 }
 
-let upload = () => {
-	//console.log(`Uploading to Youtube`);
-	return new Promise((resolve, reject) => {
-		resolve();
-	});
-}
-
 module.exports = {
-	generateClips: generateClips,
-	mergeClips: mergeClips,
-	upload: upload
+	generate: async (post, comments) => {
+		return new Promise(async resolve => {
+			
+			// Generate clips
+			await generateClip(post.id, path);
+			for (let comment of comments) await generateClip(comment.id, path);
+			
+			// Merge clips
+			await mergeClips(post, comments);
+
+			// Transitions?
+			
+			// Background music?
+
+			resolve();
+        });
+	}
 };
