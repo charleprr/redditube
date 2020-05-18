@@ -32,7 +32,7 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         context.fillText(line, x, y);
         y += lineHeight;
     }
-    return y;
+    return y - lineHeight;
 }
 
 function generatePostImage(post) {
@@ -51,7 +51,7 @@ function generatePostImage(post) {
     ctx.fillStyle = `#D7DADC`;
     let upvotes = kFormatter(post.ups);
     let textWidth = ctx.measureText(upvotes).width;
-    ctx.fillText(upvotes , (canvas.width/2) - (textWidth/2) - 526, 402);
+    ctx.fillText(upvotes, (canvas.width/2) - (textWidth/2) - 526, 402);
     ctx.drawImage(arrowUp, 418, 323, 32, 36);
     ctx.drawImage(arrowDown, 418, 423, 32, 36);
 
@@ -120,7 +120,6 @@ module.exports = {
         return new Promise(async resolve => {
 
             // Load resources
-            console.log(`Loading resources`);
             arrowUp = await loadImage(`./resources/arrowUp.png`);
             arrowDown = await loadImage(`./resources/arrowDown.png`);
             registerFont(`./resources/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});

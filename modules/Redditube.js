@@ -15,12 +15,18 @@ const YouTube = require(`./YouTube.js`);
 
 module.exports = {
 
-    make: async (subreddit, count, sort=`top`, time=`all`) => {
-        let post = await Reddit.fetchPost(subreddit, sort, time);
-        let comments = await Reddit.fetchComments(subreddit, post.id, count);
-        //await Image.generate(post, comments);
-        //await Sound.generate(post, comments);
-        await Video.generate(post, comments);
+    make: (subreddit, count, sort=`top`, time=`all`) => {
+        return new Promise(async resolve => {    
+            
+            let post = await Reddit.fetchPost(subreddit, sort, time);
+            let comments = await Reddit.fetchComments(subreddit, post.id, count);
+            
+            //await Image.generate(post, comments);
+            //await Sound.generate(post, comments);
+            await Video.generate(post, comments);
+            
+            resolve();
+        });
     },
 
     upload: async (title, description) => {

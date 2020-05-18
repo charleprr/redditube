@@ -7,6 +7,8 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
+const videoStitch = require(`video-stitch`).concat;
+const mp3Duration = require(`mp3-duration`);
 const videoShow = require(`videoshow`);
 const configuration = {
 	fps: 24,
@@ -18,8 +20,6 @@ const configuration = {
 	videoCodec: `libx264`,
 	outputOptions: [`-pix_fmt yuv420p`]
 }
-const videoStitch = require(`video-stitch`).concat;
-const mp3Duration = require(`mp3-duration`);
 
 let generateClip = async (id) => {
 	console.log(`Generating ${output}`);
