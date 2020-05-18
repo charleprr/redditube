@@ -10,7 +10,7 @@
 const Reddit = require(`./Reddit.js`);
 const Image = require(`./Image.js`);
 const Sound = require(`./Sound.js`);
-const Video = require(`./Video.js`);
+const Video = require(`./Video2.js`);
 const YouTube = require(`./YouTube.js`);
 
 module.exports = {

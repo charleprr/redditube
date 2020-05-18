@@ -21,6 +21,9 @@ const configuration = {
 	outputOptions: [`-pix_fmt yuv420p`]
 }
 
+const FfmpegCommand = require('fluent-ffmpeg');
+const command = new FfmpegCommand();
+
 let generateClip = async (id) => {
 	console.log(`Generating ${output}`);
 	let image = `./temporary/${id}.png`;
