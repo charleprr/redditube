@@ -7,24 +7,24 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
-const Reddit = require("./Reddit.js");
-const Image = require("./Image.js");
-const Sound = require("./Sound.js");
-const Video = require("./Video.js");
-const YouTube = require("./YouTube.js");
+const Reddit = require(`./Reddit.js`);
+const Image = require(`./Image.js`);
+const Sound = require(`./Sound.js`);
+const Video = require(`./Video.js`);
+const YouTube = require(`./YouTube.js`);
 
 module.exports = {
 
-    make: async (subreddit, count) => {
-        let post = await Reddit.fetchPost(subreddit, sort="top", time="all");
+    make: async (subreddit, count, sort=`top`, time=`all`) => {
+        let post = await Reddit.fetchPost(subreddit, sort, time);
         let comments = await Reddit.fetchComments(subreddit, post.id, count);
-        await Image.generate(post, comments);
-        await Sound.generate(post, comments);
+        //await Image.generate(post, comments);
+        //await Sound.generate(post, comments);
         await Video.generate(post, comments);
     },
 
     upload: async (title, description) => {
-        console.error(`Not supported yet.`);
+        YouTube.upload();
     }
 
 };
