@@ -15,7 +15,7 @@ const YouTube = require(`./YouTube.js`);
 
 module.exports = {
 
-    make: (subreddit, count, sort=`hot`, time=`all`) => {
+    make: (subreddit, count, sort=`top`, time=`all`) => {
         return new Promise(async resolve => {    
             
             let post = await Reddit.fetchPost(subreddit, sort, time);

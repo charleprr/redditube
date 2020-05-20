@@ -22,10 +22,10 @@ const configuration = {
 }
 
 let generateClip = async (id) => {
-	console.log(`Generating ${output}`);
 	let image = `./temporary/${id}.png`;
 	let voice = `./temporary/${id}.mp3`;
 	let output = `./temporary/${id}.mp4`;
+	console.log(`Generating ${output}`);
 	let duration = await mp3Duration(voice);
 	configuration.loop = duration;
 	return new Promise((resolve, reject) => {
