@@ -34,7 +34,7 @@ let generateClip = async (id) => {
 	});
 }
 
-let mergeClips = () => {
+let mergeClips = (post, comments) => {
 	console.log(`Merging clips`);
 	
 	let video = new ffmpeg();
@@ -48,20 +48,19 @@ let mergeClips = () => {
 	}
 
 	return new Promise(resolve => {
-		video.mergeToFile(`./tpm/video.mp4`, `./tmp/`).on(`end`, () => resolve());
+		video.mergeToFile(`./tmp/video.mp4`, `./tmp/`).on(`end`, () => resolve());
 	});
 }
 
-let addBackgroundMusic = () => {
+let backgroundMusic = () => {
 	console.log(`Adding background music`);
 
 	let video = new ffmpeg()
-		.addInput(`./tpm/video.mp4`)
+		.addInput(`./tmp/video.mp4`)
 		.addInput(`./resources/lofi.mp3`)
 		.addOptions([
 			`-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.3[1a];[0a][1a]amerge[a]`,
-			`-map 0:v -map [a] -ac 2`,
-			`-shortest`
+			`-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
 		]);
 
 	return new Promise(resolve => {
@@ -73,11 +72,13 @@ module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
 
+			// Generate images/sounds?
+
 			await generateClip(post.id);
 			for (let comment of comments) await generateClip(comment.id);
 			
 			await mergeClips(post, comments);
-			await addBackgroundMusic(post, comments);
+			await backgroundMusic();
 
 			resolve();
         });
