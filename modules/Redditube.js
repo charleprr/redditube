@@ -19,8 +19,8 @@ module.exports = {
         return new Promise(async resolve => {
             let post = await Reddit.fetchPost(subreddit, sort, time);
             let comments = await Reddit.fetchComments(subreddit, post.id, count);
-            //await Image.generate(post, comments);
-            //await Sound.generate(post, comments);
+            await Image.generate(post, comments);
+            await Sound.generate(post, comments);
             await Video.generate(post, comments);
             resolve();
         });
