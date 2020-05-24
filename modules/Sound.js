@@ -13,7 +13,7 @@ const util = require(`util`);
 const client = new textToSpeech.TextToSpeechClient();
 
 function TTS(text, id) {
-    let filepath = `./temporary/${id}.mp3`;
+    let filepath = `./tmp/${id}.mp3`;
     console.log(`Generating ${filepath}`);
     return new Promise(async resolve => {
         const request = {

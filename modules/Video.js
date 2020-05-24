@@ -7,70 +7,77 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
-const videoStitch = require(`video-stitch`).concat;
-const mp3Duration = require(`mp3-duration`);
-const videoShow = require(`videoshow`);
-const configuration = {
-	fps: 24,
-	loop: 7,
-	transition: false,
-	videoBitrate: 1024,
-	size: `1920x1080`,
-	format: `mp4`,
-	videoCodec: `libx264`,
-	outputOptions: [`-pix_fmt yuv420p`]
-}
+const ffmpeg  = require(`fluent-ffmpeg`);
 
 let generateClip = async (id) => {
-	let image = `./temporary/${id}.png`;
-	let voice = `./temporary/${id}.mp3`;
-	let output = `./temporary/${id}.mp4`;
-	console.log(`Generating ${output}`);
-	let duration = await mp3Duration(voice);
-	configuration.loop = duration;
-	return new Promise((resolve, reject) => {
-		videoShow([image], configuration).audio(voice).save(output)
-		.on(`error`, (error, stdout, stderr) => {
-			console.log(error);
-			console.log(stdout);
-			console.log(stderr);
-			reject();
-		}).on(`end`, () => {
-			resolve();
-		});
+	console.log(`Generating ./tmp/${id}.mp4`);
+
+	let clip = new ffmpeg()
+	// Image
+		.addInput(`./tmp/${id}.png`)
+		.loop()
+	// Audio
+		.addInput(`./tmp/${id}.mp3`)
+		.addOption(`-shortest`)
+		.audioCodec(`libmp3lame`)
+		.audioBitrate(128)
+	// Configuration
+		.size(`1280x720`)
+		.format(`mp4`)
+		.fps(30)
+		.videoCodec(`libx264`)
+		.videoBitrate(5000)
+		.addOption(`-pix_fmt yuv420p`);
+
+	return new Promise(resolve => {
+		clip.save(`./tmp/${id}.mp4`).on(`end`, resolve);
 	});
 }
 
-let mergeClips = (post, comments) => {
-	let clips = [{"fileName":`../home/pi/projects/redditube/temporary/${post.id}.mp4`}];
-	comments.forEach(comment => clips.push({"fileName":`../home/pi/projects/redditube/temporary/${comment.id}.mp4`}));
-	console.log(`\nMerging clips`);
+let mergeClips = () => {
+	console.log(`Merging clips`);
+	
+	let video = new ffmpeg();
+	// Post
+	video.addInput(`./tmp/${post.id}.mp4`);
+	video.addInput(`./resources/glitch.mp4`);
+	// Comments
+	for (let comment of comments) {
+		video.addInput(`./tmp/${comment.id}.mp4`);
+		video.addInput(`./resources/glitch.mp4`);
+	}
+
 	return new Promise(resolve => {
-		videoStitch({silent: true, overwrite: true})
-		.clips(clips)
-		.output(`./final_video.mp4`)
-		.concat()
-		.then((filename) => {
-			console.log(`Done! Check ${filename}.`);
-			resolve();
-		});
+		video.mergeToFile(`./tpm/video.mp4`, `./tmp/`).on(`end`, () => resolve());
+	});
+}
+
+let addBackgroundMusic = () => {
+	console.log(`Adding background music`);
+
+	let video = new ffmpeg()
+		.addInput(`./tpm/video.mp4`)
+		.addInput(`./resources/lofi.mp3`)
+		.addOptions([
+			`-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.3[1a];[0a][1a]amerge[a]`,
+			`-map 0:v -map [a] -ac 2`,
+			`-shortest`
+		]);
+
+	return new Promise(resolve => {
+		video.save(`video.mp4`).on('end', () => resolve());
 	});
 }
 
 module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
-			
-			// Generate clips
+
 			await generateClip(post.id);
 			for (let comment of comments) await generateClip(comment.id);
 			
-			// Merge clips
 			await mergeClips(post, comments);
-
-			// Transitions?
-			
-			// Background music?
+			await addBackgroundMusic(post, comments);
 
 			resolve();
         });

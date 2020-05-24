@@ -36,7 +36,7 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 }
 
 function generatePostImage(post) {
-    let filepath = `./temporary/${post.id}.png`;
+    let filepath = `./tmp/${post.id}.png`;
     console.log(`Generating ${filepath}`);
 
     const canvas = createCanvas(1920, 1080);
@@ -74,7 +74,7 @@ function generatePostImage(post) {
 }
 
 function generateCommentImage(comment) {
-    let filepath = `./temporary/${comment.id}.png`;
+    let filepath = `./tmp/${comment.id}.png`;
     console.log(`Generating ${filepath}`);
     
     const canvas = createCanvas(1920, 1080);

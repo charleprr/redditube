@@ -8,6 +8,9 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 
+// YouTube API: AIzaSyAFfTodx67vV7UHkfiqSv0xqv4Odr5Lw20
+// Video category: 24 (entertainment)
+
 module.exports = {
     upload: async () => {
         console.error(`Not supported yet.`);

@@ -1,2 +1,6 @@
 const Redditube = require(`./modules/Redditube.js`);
-Redditube.make(`r/askreddit`, 3, `hot`, `all`);
+
+(async () => {
+    await Redditube.make(`r/askreddit`, 3, `hot`, `all`);
+    // await Redditube.upload();
+})();
