@@ -28,7 +28,7 @@ let generateClip = async (id) => {
 		.videoCodec(`libx264`)
 		.videoBitrate(5000)
 		.addOption(`-pix_fmt yuv420p`);
-
+	
 	return new Promise(resolve => {
 		clip.save(`./tmp/${id}.mp4`).on(`end`, resolve);
 	});
@@ -71,8 +71,6 @@ let backgroundMusic = () => {
 module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
-
-			// Generate images/sounds?
 
 			await generateClip(post.id);
 			for (let comment of comments) await generateClip(comment.id);
