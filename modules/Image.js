@@ -56,12 +56,10 @@ function generatePostImage(post) {
     ctx.fillText(upvotes, (canvas.width/2) - (textWidth/2) - 526, 402);
     ctx.drawImage(arrowUp, 418, 323, 32, 36);
     ctx.drawImage(arrowDown, 418, 423, 32, 36);
-
     // Author
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#818384`;
     wrapText(ctx, `Posted by u/${post.author}`, (canvas.width-900)/2, 340, 1000, 48);
-
     // Title
     ctx.font = `48px IBMPlexSans Medium`;
     ctx.fillStyle = `#D7DADC`;
@@ -80,30 +78,29 @@ function generateCommentImage(comment) {
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
     
+    // Draw the comment at:
+    let x = 200, y = 143;
+
     // Background
     ctx.fillStyle = `#1B191D`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
     // Upvote arrows
-    ctx.drawImage(arrowUp, 200, 143, 32, 36);
-    ctx.drawImage(arrowDown, 200, 193, 32, 36);
-
+    ctx.drawImage(arrowUp, x, y, 32, 36);
+    ctx.drawImage(arrowDown, x, y+50, 32, 36);
     // Author
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#D7DADC`;
     let author = comment.author;
-    ctx.fillText(author, 270, 163);
-
+    ctx.fillText(author, x+70, y+20);
     // Points
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#818384`;
     let upvotes = `${kFormatter(comment.ups)} points`;
-    ctx.fillText(upvotes, 277 + ctx.measureText(author).width, 163);
-
+    ctx.fillText(upvotes, x+77 + ctx.measureText(author).width, y+20);
     // Comment
     ctx.font = `30px Noto Sans`;
     ctx.fillStyle = `#D7DADC`;
-    wrapText(ctx, comment.body, 270, 215, 1300, 40);
+    wrapText(ctx, comment.body, x+70, y+72, 1300, 40);
 
     return new Promise(resolve => {
         const out = fs.createWriteStream(filepath);
@@ -116,15 +113,15 @@ function generateCommentImage(comment) {
 let arrowUp, arrowDown;
 
 module.exports = {
-    generate: (subreddit, post, comments) => {
+    generate: (post, comments, subreddit) => {
         return new Promise(async resolve => {
 
             // Load resources
-            arrowUp = await loadImage(`./resources/arrowUp.png`);
-            arrowDown = await loadImage(`./resources/arrowDown.png`);
-            registerFont(`./resources/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
-            registerFont(`./resources/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
-            registerFont(`./resources/NotoSans-Regular.ttf`, {family: `Noto Sans`});
+            arrowUp = await loadImage(`./resources/images/arrowUp.png`);
+            arrowDown = await loadImage(`./resources/images/arrowDown.png`);
+            registerFont(`./resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
+            registerFont(`./resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
+            registerFont(`./resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
             
             // Generate images
             console.log(`Generating images`);

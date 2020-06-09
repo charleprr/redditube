@@ -15,8 +15,14 @@ module.exports = {
         getJSON(`https://www.reddit.com/${subreddit}/${sort}.json?&t=${time}&limit=1`, (e, res) => {
             if (e) return reject(e);
             let post = res.data.children[0].data;
-            console.log(`Post title is « ${post.title} »`);
-            resolve(post);
+            console.log(`Fetched post « ${post.title} »`);
+            resolve({
+                id: post.id,
+                author: post.author,
+                title: post.title,
+                body: post.body,
+                ups: post.ups
+            });
         });
     }),
 
@@ -24,10 +30,32 @@ module.exports = {
         getJSON(`https://www.reddit.com/${subreddit}/comments/${post_id}/${sort}.json?t=${time}`, (e, res) => {
             if (e) return reject(e);
             let comments = [];
-            for (let comment of res[1].data.children.slice(0, n)) 
-                comments.push(comment.data);
-            console.log(`Fetched ${comments.length} comments`);
-            resolve(comments);
+            for (let comment of res[1].data.children.slice(0, n)) {
+                comment = {
+                    id: comment.data.id,
+                    link_id: comment.data.link_id.substr(3),
+                    author: comment.data.author,
+                    body: comment.data.body,
+                    ups: comment.data.ups,
+                };
+                getJSON(`https://www.reddit.com/r/askreddit/comments/${comment.link_id}/_/${comment.id}.json`, (e, res) => {
+                    if (e) return reject(e);
+                    comment.replies = res[1].data.children[0].data.replies;
+                    for (let i=0; i<comment.replies.length; ++i) {
+                        comment.replies[i] = {
+                            id: comment.data.children.replies[i].data.id,
+                            author: comment.data.children.replies[i].data.author,
+                            body: comment.data.children.replies[i].data.body,
+                            ups: comment.data.children.replies[i].data.ups,
+                        }
+                    }
+                    comments.push(comment);
+                    if (comments.length >= n) {
+                        console.log(`Fetched ${comments.length} comments`);
+                        resolve(comments);
+                    }
+                });
+            }
         });
     })
 

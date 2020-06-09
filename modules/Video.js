@@ -32,17 +32,15 @@ let generateClip = async (id) => {
 	});
 }
 
-let mergeClips = (post, comments) => {
-	console.log(`Merging clips`);
-	
+let mergeClips = (post, comments) => {	
 	let video = new ffmpeg();
 	// Post
 	video.addInput(`./tmp/${post.id}.mp4`);
-	video.addInput(`./resources/glitch.mp4`);
+	video.addInput(`./resources/videos/glitch.mp4`);
 	// Comments
 	for (let comment of comments) {
 		video.addInput(`./tmp/${comment.id}.mp4`);
-		video.addInput(`./resources/glitch.mp4`);
+		video.addInput(`./resources/videos/glitch.mp4`);
 	}
 
 	return new Promise(resolve => {
@@ -51,11 +49,9 @@ let mergeClips = (post, comments) => {
 }
 
 let backgroundMusic = () => {
-	console.log(`Adding background music`);
-
 	let video = new ffmpeg()
 		.addInput(`./tmp/video.mp4`)
-		.addInput(`./resources/lofi.mp3`)
+		.addInput(`./resources/music/lofi.mp3`)
 		.addOptions([
 			`-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.3[1a];[0a][1a]amerge[a]`,
 			`-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
@@ -74,7 +70,11 @@ module.exports = {
             await generateClip(post.id);
             for (let comment of comments)
                 await generateClip(comment.id);
-			await mergeClips(post, comments);
+            
+            console.log(`Merging clips`);
+            await mergeClips(post, comments);
+            
+            console.log(`Adding background music`);
 			await backgroundMusic();
 
 			resolve();

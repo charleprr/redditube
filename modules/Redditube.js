@@ -18,30 +18,29 @@ module.exports = {
 
     make: (subreddit, count, sort=`hot`, time=`all`) => new Promise(async resolve => {
 
-        console.log("Redditube process started");
         let t0 = performance.now();
 
         let post = await Reddit.fetchPost(subreddit, sort, time);
         let comments = await Reddit.fetchComments(subreddit, post.id, count);
 
-        await Image.generate(subreddit, post, comments);
+        let title = `${post.title} - ${subreddit}`;
+        let description = ``;
+        let tags = post.title.split(` `);
+        let privacy = `unlisted`;
+
+        await Image.generate(post, comments, subreddit);
         await Sound.generate(post, comments);
         await Video.generate(post, comments);
 
         /* Clean temporary folder */
 
-        let title = `${post.title} - ${subreddit}`;
-        let description = ``;
-        let tags = post.title.split().push("reddit");
-        let privacy = `unlisted`;
-        
         await YouTube.upload(title, description, tags, privacy);
 
-        let t1 = performance.now();
-        console.log(`Execution time: ${t1-t0}ms`);
+        let seconds = (performance.now() - t0) / 1000;
+        console.log(`Execution time: ${Math.round(seconds/60)} minutes ${Math.round(seconds%60)} seconds`);
 
         resolve();
 
     })
 
-};  
+};
