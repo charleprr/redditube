@@ -10,8 +10,6 @@
 const ffmpeg  = require(`fluent-ffmpeg`);
 
 let generateClip = async (id) => {
-	console.log(`Generating ./tmp/${id}.mp4`);
-
 	let clip = new ffmpeg()
 	// Image
 		.addInput(`./tmp/${id}.png`)
@@ -48,7 +46,7 @@ let mergeClips = (post, comments) => {
 	}
 
 	return new Promise(resolve => {
-		video.mergeToFile(`./tmp/video.mp4`, `./tmp/`).on(`end`, () => resolve());
+		video.mergeToFile(`./tmp/video.mp4`, `./tmp/`).on(`end`, resolve);
 	});
 }
 
@@ -64,7 +62,7 @@ let backgroundMusic = () => {
 		]);
 
 	return new Promise(resolve => {
-		video.save(`video.mp4`).on('end', () => resolve());
+		video.save(`video.mp4`).on('end', resolve);
 	});
 }
 
@@ -72,9 +70,10 @@ module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
 
-			await generateClip(post.id);
-			for (let comment of comments) await generateClip(comment.id);
-			
+            console.log(`Generating clips`);
+            await generateClip(post.id);
+            for (let comment of comments)
+                await generateClip(comment.id);
 			await mergeClips(post, comments);
 			await backgroundMusic();
 

@@ -35,10 +35,12 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     return y - lineHeight;
 }
 
+function generateThumbnail(subreddit, post) {
+    return new Promise (resolve => resolve());
+}
+
 function generatePostImage(post) {
     let filepath = `./tmp/${post.id}.png`;
-    console.log(`Generating ${filepath}`);
-
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
 
@@ -75,8 +77,6 @@ function generatePostImage(post) {
 
 function generateCommentImage(comment) {
     let filepath = `./tmp/${comment.id}.png`;
-    console.log(`Generating ${filepath}`);
-    
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
     
@@ -116,7 +116,7 @@ function generateCommentImage(comment) {
 let arrowUp, arrowDown;
 
 module.exports = {
-    generate: (post, comments) => {
+    generate: (subreddit, post, comments) => {
         return new Promise(async resolve => {
 
             // Load resources
@@ -127,9 +127,13 @@ module.exports = {
             registerFont(`./resources/NotoSans-Regular.ttf`, {family: `Noto Sans`});
             
             // Generate images
-            await generatePostImage(post);
-            for (let comment of comments) await generateCommentImage(comment);
-            
+            console.log(`Generating images`);
+            await Promise.all([
+                generateThumbnail(subreddit, post),
+                generatePostImage(post),
+                comments.map(comment => generateCommentImage(comment))
+            ]);
+
             // Resolve
             resolve();
 

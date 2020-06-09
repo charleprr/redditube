@@ -12,7 +12,7 @@
 // Video category: 24 (entertainment)
 
 module.exports = {
-    upload: async () => {
-        console.error(`Not supported yet.`);
+    upload: (title, description, tags, privacy) => {
+        return new Promise (resolve => resolve());
     }
 };

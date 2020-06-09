@@ -14,26 +14,34 @@ const client = new textToSpeech.TextToSpeechClient();
 
 function TTS(text, id) {
     let filepath = `./tmp/${id}.mp3`;
-    console.log(`Generating ${filepath}`);
+    const request = {
+        input: {text: text},
+        voice: {languageCode: `en-US`, ssmlGender: `MALE`},
+        audioConfig: {audioEncoding: `MP3`},
+    };
     return new Promise(async resolve => {
-        const request = {
-            input: {text: text},
-            voice: {languageCode: `en-US`, ssmlGender: `MALE`},
-            audioConfig: {audioEncoding: `MP3`},
-        };
         const [response] = await client.synthesizeSpeech(request);
         const writeFile = util.promisify(fs.writeFile);
         await writeFile(filepath, response.audioContent, `binary`);
-        resolve(filepath);
+        resolve();
     });
 }
 
 module.exports = {
     generate: (post, comments) => {
         return new Promise(async resolve => {
+            console.log(`Generating sounds`);
             await TTS(post.title, post.id);
-            for (let comment of comments) await TTS(comment.body, comment.id);
+            for (let comment of comments)
+                await TTS(comment.body, comment.id);
             resolve();
         });
     }
+    
+    /*
+    generate: (post, comments) => Promise.all([
+        TTS(post.title, post.id),
+        comments.map(comment => TTS(comment.body, comment.id))
+    ])
+    */
 };
