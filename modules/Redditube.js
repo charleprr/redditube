@@ -7,7 +7,7 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
-const { performance } = require('perf_hooks');
+const { performance } = require(`perf_hooks`);
 const Reddit = require(`./Reddit.js`);
 const Image = require(`./Image.js`);
 const Sound = require(`./Sound.js`);
@@ -18,17 +18,18 @@ module.exports = {
 
     make: (subreddit, count, sort=`hot`, time=`all`) => new Promise(async resolve => {
 
-        let t0 = performance.now();
+        console.log(`Making video from ${subreddit} (${sort}/${time})`)
+        const t0 = performance.now();
 
-        let post = await Reddit.fetchPost(subreddit, sort, time);
-        let comments = await Reddit.fetchComments(subreddit, post.id, count);
+        const post = await Reddit.fetchPost(subreddit, sort, time);
+        const comments = await Reddit.fetchComments(subreddit, post.id, count);
 
-        let title = `${post.title} - ${subreddit}`;
-        let description = ``;
-        let tags = post.title.split(` `);
-        let privacy = `unlisted`;
+        const title = `${post.title} - ${subreddit}`;
+        const description = `${title}\n#reddit #stories`;
+        const tags = post.title.split(` `);
+        const privacy = `unlisted`;
 
-        await Image.generate(post, comments, subreddit);
+        await Image.generate(post, comments, subreddit); //return resolve();
         await Sound.generate(post, comments);
         await Video.generate(post, comments);
 
@@ -36,7 +37,7 @@ module.exports = {
 
         await YouTube.upload(title, description, tags, privacy);
 
-        let seconds = (performance.now() - t0) / 1000;
+        const seconds = (performance.now() - t0) / 1000;
         console.log(`Execution time: ${Math.round(seconds/60)} minutes ${Math.round(seconds%60)} seconds`);
 
         resolve();

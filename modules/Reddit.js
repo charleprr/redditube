@@ -16,12 +16,17 @@ module.exports = {
             if (e) return reject(e);
             let post = res.data.children[0].data;
             console.log(`Fetched post « ${post.title} »`);
-            resolve({
+            return resolve({
                 id: post.id,
                 author: post.author,
                 title: post.title,
                 body: post.body,
-                ups: post.ups
+                ups: post.ups,
+                awards: post.all_awardings.map(award => Object({
+                    name: award.name,
+                    count: award.count,
+                    url: award.icon_url
+                }))
             });
         });
     }),
@@ -37,6 +42,11 @@ module.exports = {
                     author: comment.data.author,
                     body: comment.data.body,
                     ups: comment.data.ups,
+                    awards: comment.data.all_awardings.map(award => Object({
+                        name: award.name,
+                        count: award.count,
+                        url: award.icon_url
+                    }))
                 };
                 getJSON(`https://www.reddit.com/r/askreddit/comments/${comment.link_id}/_/${comment.id}.json`, (e, res) => {
                     if (e) return reject(e);
@@ -47,12 +57,17 @@ module.exports = {
                             author: comment.data.children.replies[i].data.author,
                             body: comment.data.children.replies[i].data.body,
                             ups: comment.data.children.replies[i].data.ups,
+                            awards: comment.data.children.replies[i].data.all_awardings.map(award => Object({
+                                name: award.name,
+                                count: award.count,
+                                url: award.icon_url
+                            }))
                         }
                     }
                     comments.push(comment);
                     if (comments.length >= n) {
                         console.log(`Fetched ${comments.length} comments`);
-                        resolve(comments);
+                        return resolve(comments);
                     }
                 });
             }

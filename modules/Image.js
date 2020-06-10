@@ -7,16 +7,11 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
-const { loadImage, registerFont, createCanvas } = require(`canvas`);
 const fs = require(`fs`);
+const { loadImage, registerFont, createCanvas } = require(`canvas`);
 
-function kFormatter(num) {
-    return Math.abs(num) > 999
-    ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k`
-    : Math.sign(num)*Math.abs(num);
-}
-
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
+let kFormatter = num => Math.abs(num) > 999 ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k` : Math.sign(num)*Math.abs(num);
+let wrapText = (context, text, x, y, maxWidth, lineHeight) => {
     text = text.split(`\n`);
     for (let paragraph of text) {
         let words = paragraph.split(` `);
@@ -39,31 +34,40 @@ function generateThumbnail(subreddit, post) {
     return new Promise (resolve => resolve());
 }
 
-function generatePostImage(post) {
-    let filepath = `./tmp/${post.id}.png`;
+async function generatePostImage(post) {
+
+    const filepath = `./tmp/${post.id}.png`;
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
 
-    // Background
     ctx.fillStyle = `#1B191D`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Upvotes
+    const x = 400;
+    const y = 350;
+    const author = `Posted by u/${post.author}`;
+    const points = kFormatter(post.ups);
+    const title = post.title;
+
+    ctx.drawImage(arrowUp, x, y, 32, 36);
     ctx.font = `32px IBMPlexSans Medium`;
     ctx.fillStyle = `#D7DADC`;
-    let upvotes = kFormatter(post.ups);
-    let textWidth = ctx.measureText(upvotes).width;
-    ctx.fillText(upvotes, (canvas.width/2) - (textWidth/2) - 526, 402);
-    ctx.drawImage(arrowUp, 418, 323, 32, 36);
-    ctx.drawImage(arrowDown, 418, 423, 32, 36);
-    // Author
+    ctx.fillText(points, x + 16 - (ctx.measureText(points).width/2), y + 79);
+    ctx.drawImage(arrowDown, x, y + 100, 32, 36);
+    
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#818384`;
-    wrapText(ctx, `Posted by u/${post.author}`, (canvas.width-900)/2, 340, 1000, 48);
-    // Title
-    ctx.font = `48px IBMPlexSans Medium`;
+    wrapText(ctx, author, x + 92, y + 17, 1000, 48);
+    
+    let icon;
+    for (let i=0; i<post.awards.length; ++i) {
+        icon = await loadImage(post.awards[i].url);
+        ctx.drawImage(icon, x + ctx.measureText(author).width + i*40 + 102, y - 5, 30, 30);
+    }
+    
+    ctx.font = `52px IBMPlexSans Medium`;
     ctx.fillStyle = `#D7DADC`;
-    wrapText(ctx, post.title, (canvas.width-900)/2, 400, 850, 58);
+    wrapText(ctx, title, x + 92, y + 80, 850, 58);
 
     return new Promise(resolve => {
         const out = fs.createWriteStream(filepath);
@@ -73,34 +77,41 @@ function generatePostImage(post) {
     });
 }
 
-function generateCommentImage(comment) {
-    let filepath = `./tmp/${comment.id}.png`;
+async function generateCommentImage(comment) {
+
+    const filepath = `./tmp/${comment.id}.png`;
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
-    
-    // Draw the comment at:
-    let x = 200, y = 143;
 
-    // Background
     ctx.fillStyle = `#1B191D`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Upvote arrows
+    
+    const x = 200;
+    const y = 145;
+    const author = comment.author;
+    const points = `${kFormatter(comment.ups)} points`;
+    const body = comment.body;
+
     ctx.drawImage(arrowUp, x, y, 32, 36);
-    ctx.drawImage(arrowDown, x, y+50, 32, 36);
-    // Author
+    ctx.drawImage(arrowDown, x, y + 50, 32, 36);
+
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#D7DADC`;
-    let author = comment.author;
-    ctx.fillText(author, x+70, y+20);
-    // Points
+    ctx.fillText(author, x + 70, y + 20);
+    
     ctx.font = `24px IBMPlexSans Regular`;
     ctx.fillStyle = `#818384`;
-    let upvotes = `${kFormatter(comment.ups)} points`;
-    ctx.fillText(upvotes, x+77 + ctx.measureText(author).width, y+20);
-    // Comment
+    ctx.fillText(points, x + 79 + ctx.measureText(author).width, y + 20);
+    
+    let icon;
+    for (let i=0; i<comment.awards.length; ++i) {
+        icon = await loadImage(comment.awards[i].url);
+        ctx.drawImage(icon, x + ctx.measureText(author).width + ctx.measureText(points).width + i*40 + 90, y - 5, 30, 30);
+    }
+    
     ctx.font = `30px Noto Sans`;
     ctx.fillStyle = `#D7DADC`;
-    wrapText(ctx, comment.body, x+70, y+72, 1300, 40);
+    wrapText(ctx, body, x + 70, y + 72, 1300, 40);
 
     return new Promise(resolve => {
         const out = fs.createWriteStream(filepath);
