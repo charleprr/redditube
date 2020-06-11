@@ -13,6 +13,7 @@ const util = require(`util`);
 const client = new textToSpeech.TextToSpeechClient();
 
 function TTS(text, filepath) {
+    console.log(`\t${filepath}`);
     const request = {
         input: {text: text},
         voice: {languageCode: `en-US`, ssmlGender: `MALE`},
@@ -31,24 +32,17 @@ module.exports = {
         return new Promise(async resolve => {
 
             console.log(`Generating sounds`);
-        
             await TTS(post.title, `tmp/${post.id}.mp3`);
-        
+
             for (const comment of comments) {
                 const sentences = comment.body.split(/\n(?!.)/g);
                 for (let i=0; i<sentences.length; ++i) {
                     await TTS(sentences[i], `tmp/${comment.id}-${i}.mp3`);
                 }
             }
+
             resolve();
-        
+
         });
     }
-    
-    /*
-    generate: (post, comments) => Promise.all([
-        TTS(post.title, post.id),
-        comments.map(comment => TTS(comment.body, comment.id))
-    ])
-    */
 };

@@ -32,6 +32,7 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
 
 const postImage = async post => {
 
+    console.log(`\ttmp/${post.id}.png`);
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
 
@@ -84,6 +85,7 @@ const commentImages = async comment => {
 
     const promises = [];
     for (let i=0; i<sentences.length; ++i) {
+        console.log(`\ttmp/${comment.id}-${i}.png`);
 
         const canvas = createCanvas(1920, 1080);
         const ctx = canvas.getContext(`2d`);
@@ -135,10 +137,9 @@ module.exports = {
     generate: (post, comments, subreddit) => {
         return new Promise(async resolve => {
 
-            console.log(`Loading resources`);
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
-            
+
             console.log(`Generating images`);
             await Promise.all([ postImage(post), comments.map(c => commentImages(c)) ]);
 

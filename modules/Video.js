@@ -10,6 +10,7 @@
 const ffmpeg = require(`fluent-ffmpeg`);
 
 const postClip = post => {
+    console.log(`\ttmp/${post.id}.mp4`);
 	const clip = new ffmpeg()
 	// Image
 		.addInput(`tmp/${post.id}.png`)
@@ -18,7 +19,7 @@ const postClip = post => {
 		.addInput(`tmp/${post.id}.mp3`)
 		.addOption(`-shortest`)
 		.audioCodec(`libmp3lame`)
-		.audioBitrate(128)
+        .audioBitrate(128)
 	// Configuration
 		.size(`1280x720`)
 		.format(`mp4`)
@@ -37,8 +38,8 @@ const commentClip = comment => {
     const n = comment.body.split(/\n(?!.)/g).length;
 
     return new Promise(async resolve => {
-        /*for (let i=0; i<n; ++i) {
-            console.log(`tmp/${comment.id}-${i}.mp4`);
+        for (let i=0; i<n; ++i) {
+            console.log(`\ttmp/${comment.id}-${i}.mp4`);
             const clip = new ffmpeg()
                 .addInput(`tmp/${comment.id}-${i}.png`)
                 .loop()
@@ -52,16 +53,16 @@ const commentClip = comment => {
                 .videoCodec(`libx264`)
                 .videoBitrate(5000)
                 .addOption(`-pix_fmt yuv420p`);
-            await new Promise(resolve => { clip.save(`tmp/${comment.id}-${i}.mp4`).on(`end`, resolve) });
-        }*/
-        
-        console.log(`merging into tmp/${comment.id}.mp4`);
-        const video = new ffmpeg();
-        for (let i=0; i<n; ++i) {
-            video.addInput(`tmp/${comment.id}-${i}.mp4`);
+            await new Promise(resolve => { clip.save(`tmp/${comment.id}-${i}.mp4`).on(`end`, resolve); });
         }
-        video.addInput(`resources/videos/glitch.mp4`);
-        await new Promise(resolve => { video.mergeToFile(`tmp/${comment.id}.mp4`, `tmp/`).on(`end`, resolve) });
+        
+        console.log(`\tMerging into tmp/${comment.id}.mp4`);
+        const clip = new ffmpeg();
+        for (let i=0; i<n; ++i) {
+            clip.addInput(`tmp/${comment.id}-${i}.mp4`);
+        }
+        //clip.addInput(`resources/videos/glitch.mp4`);
+        await new Promise(resolve => { clip.mergeToFile(`tmp/${comment.id}.mp4`, `tmp/`).on(`end`, resolve); });
         
         resolve();
     });
@@ -103,15 +104,19 @@ module.exports = {
 		return new Promise(async resolve => {
 
             console.log(`Generating clips`);
-            //await postClip(post);
-            for (const comment of comments)
+            /* Work here first */
+
+            await postClip(post);
+
+            for (const comment of comments) {
                 await commentClip(comment);
+            }
             
-            // console.log(`Merging clips`);
-            // await mergeClips(post, comments);
+            console.log(`Merging clips`);
+            await mergeClips(post, comments);
             
-            // console.log(`Adding some LoFi`);
-			// await backgroundMusic();
+            console.log(`Adding some LoFi`);
+			await backgroundMusic();
 
 			resolve();
         });
