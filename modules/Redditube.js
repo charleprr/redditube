@@ -29,11 +29,11 @@ module.exports = {
         const tags = post.title.split(` `);
         const privacy = `unlisted`;
 
-        await Image.generate(post, comments, subreddit); //return resolve();
+        await Image.generate(post, comments, subreddit); return resolve();
         await Sound.generate(post, comments);
         await Video.generate(post, comments);
 
-        /* Clean temporary folder */
+        /* Clean temporary folder (synchronous) */
 
         await YouTube.upload(title, description, tags, privacy);
 

@@ -12,10 +12,10 @@ const ffmpeg  = require(`fluent-ffmpeg`);
 let generateClip = async (id) => {
 	let clip = new ffmpeg()
 	// Image
-		.addInput(`./tmp/${id}.png`)
+		.addInput(`tmp/${id}.png`)
 		.loop()
 	// Audio
-		.addInput(`./tmp/${id}.mp3`)
+		.addInput(`tmp/${id}.mp3`)
 		.addOption(`-shortest`)
 		.audioCodec(`libmp3lame`)
 		.audioBitrate(128) // 128
@@ -28,7 +28,7 @@ let generateClip = async (id) => {
 		.addOption(`-pix_fmt yuv420p`);
 	
 	return new Promise(resolve => {
-		clip.save(`./tmp/${id}.mp4`).on(`end`, resolve);
+		clip.save(`tmp/${id}.mp4`).on(`end`, resolve);
 	});
 }
 
@@ -51,8 +51,8 @@ let mergeClips = (post, comments) => {
 
 let backgroundMusic = () => {
 	let video = new ffmpeg();
-	video.addInput(`./tmp/video.mp4`);
-	video.addInput(`./resources/music/lofi2.mp3`);
+	video.addInput(`tmp/video.mp4`);
+	video.addInput(`resources/music/lofi2.mp3`);
 	video.addOptions([
         `-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.4[1a];[0a][1a]amerge[a]`,
         `-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
