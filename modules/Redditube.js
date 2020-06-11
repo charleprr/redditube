@@ -29,7 +29,7 @@ module.exports = {
         const tags = post.title.split(` `);
         const privacy = `unlisted`;
 
-        await Image.generate(post, comments, subreddit); return resolve();
+        await Image.generate(post, comments, subreddit);
         await Sound.generate(post, comments);
         await Video.generate(post, comments);
 

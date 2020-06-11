@@ -34,10 +34,10 @@ module.exports = {
         
             await TTS(post.title, `tmp/${post.id}.mp3`);
         
-            for (let comment of comments) {
-                let sentences = comment.body.split(`\n`);
+            for (const comment of comments) {
+                const sentences = comment.body.split(/\n(?!.)/g);
                 for (let i=0; i<sentences.length; ++i) {
-                    await TTS(comment.body, `tmp/${comment.id}-${i}.mp3`);
+                    await TTS(sentences[i], `tmp/${comment.id}-${i}.mp3`);
                 }
             }
             resolve();

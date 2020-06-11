@@ -10,11 +10,11 @@
 const fs = require(`fs`);
 const { loadImage, registerFont, createCanvas } = require(`canvas`);
 
-let kFormatter = num => Math.abs(num) > 999 ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k` : Math.sign(num)*Math.abs(num);
-let wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+const kFormatter = num => Math.abs(num) > 999 ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k` : Math.sign(num)*Math.abs(num);
+const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
     text = text.split(`\n`);
-    for (let paragraph of text) {
-        let words = paragraph.split(` `);
+    for (const paragraph of text) {
+        const words = paragraph.split(` `);
         let line = ``;
         for (let word of words) {
             line = line + word + ` `;
@@ -30,7 +30,7 @@ let wrapText = (context, text, x, y, maxWidth, lineHeight) => {
     return y - lineHeight;
 }
 
-let postImage = async post => {
+const postImage = async post => {
 
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
@@ -72,7 +72,7 @@ let postImage = async post => {
     });
 }
 
-let commentImages = async comment => {
+const commentImages = async comment => {
 
     const x = 180;
     const y = 145;

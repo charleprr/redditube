@@ -14,9 +14,9 @@ const googleapis = require('googleapis'); // AIzaSyAFfTodx67vV7UHkfiqSv0xqv4Odr5
 
 module.exports = {
     upload: (title, description, tags, privacy) => {
-        return resolve();
         return new Promise (resolve => {
-
+            return resolve();
+            
             googleapis.discover('youtube', 'v3').execute((err, client) => {
                 // https://developers.google.com/youtube/v3/docs/videos/insert#request-body
                 let metadata = {
