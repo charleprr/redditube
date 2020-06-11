@@ -30,7 +30,7 @@ let wrapText = (context, text, x, y, maxWidth, lineHeight) => {
     return y - lineHeight;
 }
 
-async function postImage(post) {
+let postImage = async post => {
 
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
@@ -72,7 +72,7 @@ async function postImage(post) {
     });
 }
 
-async function commentImages(comment) {
+let commentImages = async comment => {
 
     const x = 180;
     const y = 145;
@@ -80,10 +80,9 @@ async function commentImages(comment) {
     const author = comment.author;
     const points = `${kFormatter(comment.ups)} points`;
     const awards = comment.awards;
-    const sentences = comment.body.split(`\n`);
+    const sentences = comment.body.split(/\n(?!.)/g);
 
     const promises = [];
-    
     for (let i=0; i<sentences.length; ++i) {
 
         const canvas = createCanvas(1920, 1080);
