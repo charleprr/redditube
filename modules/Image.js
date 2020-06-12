@@ -7,8 +7,8 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
-const fs = require(`fs`);
 const { loadImage, registerFont, createCanvas } = require(`canvas`);
+const fs = require(`fs`);
 
 const kFormatter = num => Math.abs(num) > 999 ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k` : Math.sign(num)*Math.abs(num);
 const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
@@ -135,10 +135,10 @@ module.exports = {
     generate: (post, comments, subreddit) => {
         return new Promise(async resolve => {
 
-            console.log(`Generating images`);
-
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
+
+            console.log(`Generating images`);
 
             await Promise.all([ postImage(post), comments.map(c => commentImages(c)) ]);
 

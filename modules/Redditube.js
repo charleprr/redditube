@@ -27,17 +27,17 @@ module.exports = {
         const comments = await Reddit.fetchComments(subreddit, post.id, count);
 
         await Image.generate(post, comments, subreddit);
-        await Sound.generate(post, comments);
+        //await Sound.generate(post, comments);
         await Video.generate(post, comments);
 
-        fs.readdir(`tmp`, (err, files) => {
-            if (err) throw err;
-            for (const file of files) {
-                fs.unlink(`tmp/${file}`, err => {
-                    if (err) throw err;
-                });
-            }
-        });
+        // fs.readdir(`./tmp`, (err, files) => {
+        //     if (err) throw err;
+        //     for (const file of files) {
+        //         fs.unlink(`./tmp/${file}`, err => {
+        //             if (err) throw err;
+        //         });
+        //     }
+        // });
         
         const title = `${post.title} - ${subreddit}`;
         const description = `${title}\n#reddit #stories`;
