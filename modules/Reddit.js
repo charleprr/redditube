@@ -41,6 +41,7 @@ module.exports = {
                     link_id: comment.data.link_id.substr(3),
                     author: comment.data.author,
                     body: comment.data.body,
+                    paragraphs: comment.data.body.split(/\n(?!.)/g),
                     ups: comment.data.ups,
                     awards: comment.data.all_awardings.map(award => Object({
                         name: award.name,

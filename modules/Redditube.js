@@ -8,8 +8,8 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 const fs = require(`fs`);
-const path = require(`path`);
 const { performance } = require(`perf_hooks`);
+
 const Reddit = require(`./Reddit.js`);
 const Image = require(`./Image.js`);
 const Sound = require(`./Sound.js`);
@@ -20,7 +20,7 @@ module.exports = {
 
     make: (subreddit, count, sort=`hot`, time=`all`) => new Promise(async resolve => {
 
-        console.log(`Making video from ${subreddit} (${sort}/${time})`)
+        console.log(`Making video from ${subreddit} (${sort}, ${time})`)
         const t0 = performance.now();
 
         const post = await Reddit.fetchPost(subreddit, sort, time);

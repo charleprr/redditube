@@ -9,114 +9,71 @@
 */
 const ffmpeg = require(`fluent-ffmpeg`);
 
-const postClip = post => {
-    console.log(`\ttmp/${post.id}.mp4`);
-	const clip = new ffmpeg()
-	// Image
-		.addInput(`tmp/${post.id}.png`)
-		.loop()
-	// Audio
-		.addInput(`tmp/${post.id}.mp3`)
-		.addOption(`-shortest`)
-		.audioCodec(`libmp3lame`)
-        .audioBitrate(128)
-	// Configuration
-		.size(`1280x720`)
-		.format(`mp4`)
-		.fps(30)
-		.videoCodec(`libx264`)
-		.videoBitrate(5000)
-		.addOption(`-pix_fmt yuv420p`);
-	
-	return new Promise(resolve => {
-		clip.save(`tmp/${post.id}.mp4`).on(`end`, resolve);
-	});
-}
-
-const commentClip = comment => {
-
-    const n = comment.body.split(/\n(?!.)/g).length;
-
-    return new Promise(async resolve => {
-        for (let i=0; i<n; ++i) {
-            console.log(`\ttmp/${comment.id}-${i}.mp4`);
-            const clip = new ffmpeg()
-                .addInput(`tmp/${comment.id}-${i}.png`)
-                .loop()
-                .addInput(`tmp/${comment.id}-${i}.mp3`)
-                .addOption(`-shortest`)
-                .audioCodec(`libmp3lame`)
-                .audioBitrate(128)
-                .size(`1280x720`)
-                .format(`mp4`)
-                .fps(30)
-                .videoCodec(`libx264`)
-                .videoBitrate(5000)
-                .addOption(`-pix_fmt yuv420p`);
-            await new Promise(resolve => { clip.save(`tmp/${comment.id}-${i}.mp4`).on(`end`, resolve); });
-        }
-        
-        console.log(`\tMerging into tmp/${comment.id}.mp4`);
-        const clip = new ffmpeg();
-        for (let i=0; i<n; ++i) {
-            clip.addInput(`tmp/${comment.id}-${i}.mp4`);
-        }
-        //clip.addInput(`resources/videos/glitch.mp4`);
-        await new Promise(resolve => { clip.mergeToFile(`tmp/${comment.id}.mp4`, `tmp/`).on(`end`, resolve); });
-        
-        resolve();
-    });
-    
-}
-
-const mergeClips = (post, comments) => {	
+const create = (id) => {
+    const output = `tmp/${id}.mp4`;
     const video = new ffmpeg();
-    
-    // Post
-	video.addInput(`tmp/${post.id}.mp4`);
-	video.addInput(`resources/videos/glitch.mp4`);
-	// Comments
-	for (const comment of comments) {
-		video.addInput(`tmp/${comment.id}.mp4`);
-		video.addInput(`resources/videos/glitch.mp4`);
-    }
-    
-	return new Promise(resolve => {
-		video.mergeToFile(`tmp/video.mp4`, `tmp/`).on(`end`, resolve);
-	});
+	video.addInput(`tmp/${id}.png`);
+	video.loop();
+	video.addInput(`tmp/${id}.mp3`);
+	video.addOption(`-shortest`);
+	video.audioCodec(`libmp3lame`);
+    video.audioBitrate(128);
+	video.size(`1280x720`);
+	video.format(`mp4`);
+	video.fps(30);
+	video.videoCodec(`libx264`);
+	video.videoBitrate(5000);
+    video.addOption(`-pix_fmt yuv420p`);
+    video.save(output);
+	return new Promise(resolve => video.on(`end`, resolve(output)));
 }
 
-const backgroundMusic = () => {
+const merge = (clips, output) => {
+    const output = `tmp/${output}.mp4`;
+    const video = new ffmpeg();
+    for (const clip of clips) video.addInput(`tmp/${clip}.mp4`);
+    video.mergeToFile(output, `tmp/`);
+    return new Promise(resolve => video.on(`end`, resolve(output)));
+}
+
+const lofi = () => {
 	const video = new ffmpeg();
-	video.addInput(`tmp/video.mp4`);
-	video.addInput(`resources/music/lofi2.mp3`);
+	video.addInput(`tmp/tmp.mp4`);
+	video.addInput(`resources/music/lofi3.mp3`);
 	video.addOptions([
         `-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.4[1a];[0a][1a]amerge[a]`,
         `-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
     ]);
-	return new Promise(resolve => {
-		video.save(`video.mp4`).on('end', resolve);
-	});
+    video.save(`final_video.mp4`);
+	return new Promise(resolve => video.on(`end`, resolve));
 }
 
 module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
 
-            console.log(`Generating clips`);
-            /* Work here first */
+            const clips = [];
 
-            await postClip(post);
+            await merge([
+                await create(post.id), `resources/videos/glitch.mp4`
+            ], post.id).then(file => clips.push(file));
 
+            const splits;
             for (const comment of comments) {
-                await commentClip(comment);
+
+                splits = [];
+                for (let i=0; i<comment.paragraphs.length; ++i) {
+                    await create(`${comment.id}-${i}`).then(split => splits.push(split));
+                }
+
+                await merge([
+                    await merge(splits), `resources/videos/glitch.mp4`
+                ], comment.id).then(file => clips.push(file));
+                
             }
-            
-            console.log(`Merging clips`);
-            await mergeClips(post, comments);
-            
-            console.log(`Adding some LoFi`);
-			await backgroundMusic();
+
+            await merge(clips, `tmp.mp4`);
+			await lofi();
 
 			resolve();
         });

@@ -32,7 +32,6 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
 
 const postImage = async post => {
 
-    console.log(`\ttmp/${post.id}.png`);
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
 
@@ -81,11 +80,10 @@ const commentImages = async comment => {
     const author = comment.author;
     const points = `${kFormatter(comment.ups)} points`;
     const awards = comment.awards;
-    const sentences = comment.body.split(/\n(?!.)/g);
+    const paragraphs = comment.paragraphs;
 
     const promises = [];
-    for (let i=0; i<sentences.length; ++i) {
-        console.log(`\ttmp/${comment.id}-${i}.png`);
+    for (let i=0; i<paragraphs.length; ++i) {
 
         const canvas = createCanvas(1920, 1080);
         const ctx = canvas.getContext(`2d`);
@@ -114,7 +112,7 @@ const commentImages = async comment => {
         
         ctx.font = `30px Noto Sans`;
         ctx.fillStyle = `#D7DADC`;
-        wrapText(ctx, sentences.slice(0, i + 1).join(`\n`), x + 70, y + 72, 1300, 40);
+        wrapText(ctx, paragraphs.slice(0, i + 1).join(`\n`), x + 70, y + 72, 1300, 40);
 
         promises.push(new Promise(resolve => {
             const out = fs.createWriteStream(`tmp/${comment.id}-${i}.png`);
@@ -137,10 +135,11 @@ module.exports = {
     generate: (post, comments, subreddit) => {
         return new Promise(async resolve => {
 
+            console.log(`Generating images`);
+
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
 
-            console.log(`Generating images`);
             await Promise.all([ postImage(post), comments.map(c => commentImages(c)) ]);
 
             resolve();

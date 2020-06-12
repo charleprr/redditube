@@ -13,7 +13,6 @@ const util = require(`util`);
 const client = new textToSpeech.TextToSpeechClient();
 
 function TTS(text, filepath) {
-    console.log(`\t${filepath}`);
     const request = {
         input: {text: text},
         voice: {languageCode: `en-US`, ssmlGender: `MALE`},
@@ -35,9 +34,9 @@ module.exports = {
             await TTS(post.title, `tmp/${post.id}.mp3`);
 
             for (const comment of comments) {
-                const sentences = comment.body.split(/\n(?!.)/g);
-                for (let i=0; i<sentences.length; ++i) {
-                    await TTS(sentences[i], `tmp/${comment.id}-${i}.mp3`);
+                const paragraphs = comment.paragraphs;
+                for (let i=0; i<paragraphs.length; ++i) {
+                    await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
                 }
             }
 
