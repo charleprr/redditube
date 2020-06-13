@@ -144,7 +144,7 @@ module.exports = {
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
 
-            console.log(`Making images`);
+            console.log(`Making image files`);
             await postImage(post);
             for (const comment of comments)
                 await commentImages(comment);

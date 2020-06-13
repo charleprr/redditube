@@ -19,7 +19,7 @@ module.exports = {
 
     make: (subreddit, count, sort=`hot`, time=`all`) => new Promise(async resolve => {
 
-        console.log(`Making video from ${subreddit}`)
+        console.log(`Making video from ${subreddit}`);
         const t0 = performance.now();
 
         const post = await Reddit.fetchPost(subreddit, sort, time);

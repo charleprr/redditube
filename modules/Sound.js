@@ -31,7 +31,7 @@ module.exports = {
     generate: (post, comments) => {
         return new Promise(async resolve => {
 
-            console.log(`Making sounds`);
+            console.log(`Making text-to-speech files`);
             await TTS(`${subreddit} by ${post.author}. ${post.title}`, `tmp/${post.id}.mp3`);
 
             for (const comment of comments) {

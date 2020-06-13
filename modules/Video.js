@@ -10,8 +10,8 @@
 const ffmpeg = require(`fluent-ffmpeg`);
 
 const create = (id) => {
-    const filename = `tmp/${id}.mp4`;
-    console.log(` ${filename}`);
+    const output = `tmp/${id}.mp4`;
+    console.log(` ${output}`);
     const video = new ffmpeg();
 	video.addInput(`tmp/${id}.png`);
 	video.loop();
@@ -26,7 +26,7 @@ const create = (id) => {
 	video.videoBitrate(5000);
     video.addOption(`-pix_fmt yuv420p`);
 	return new Promise(resolve => {
-        video.save(filename).on(`end`, () => resolve(filename));
+        video.save(output).on(`end`, () => resolve(output));
     });
 }
 
@@ -57,8 +57,7 @@ module.exports = {
 	generate: (post, comments) => {
 		return new Promise(async resolve => {
 
-            console.log(`Making videos`);
-
+            console.log(`Making video files`);
             await create(post.id);
             await merge([`tmp/${post.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${post.id}-glitch.mp4`);
 
@@ -80,13 +79,17 @@ module.exports = {
 
             }
 
-            const chunks = [];
+            console.log(`Making chunks`);
+            const chunks = [], id;
             for (let i=0; i<clips.length; i+=5) {
                 await merge(clips.slice(i, i+5), `tmp/chunk${i}-${i+4}.mp4`);
                 chunks.push(`tmp/chunk${i}-${i+4}.mp4`);
             }
+
+            console.log(`Merging`);
             await merge(chunks, `tmp/chunks.mp4`);
             
+            console.log(`Adding the background music`);
             await lofi(`final_video.mp4`);
 
 			resolve();
