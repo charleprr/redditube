@@ -12,7 +12,8 @@ const fs = require(`fs`);
 const util = require(`util`);
 const client = new textToSpeech.TextToSpeechClient();
 
-function TTS(text, filepath) {
+function TTS(text, output) {
+    console.log(` ${output}`);
     const request = {
         input: {text: text},
         voice: {languageCode: `en-US`, ssmlGender: `MALE`},
@@ -21,7 +22,7 @@ function TTS(text, filepath) {
     return new Promise(async resolve => {
         const [response] = await client.synthesizeSpeech(request);
         const writeFile = util.promisify(fs.writeFile);
-        await writeFile(filepath, response.audioContent, `binary`);
+        await writeFile(output, response.audioContent, `binary`);
         resolve();
     });
 }
@@ -30,13 +31,14 @@ module.exports = {
     generate: (post, comments) => {
         return new Promise(async resolve => {
 
-            console.log(`Generating sounds`);
-            await TTS(post.title, `tmp/${post.id}.mp3`);
+            console.log(`Making sounds`);
+            await TTS(`${subreddit} by ${post.author}. ${post.title}`, `tmp/${post.id}.mp3`);
 
             for (const comment of comments) {
                 const paragraphs = comment.paragraphs;
                 for (let i=0; i<paragraphs.length; ++i) {
                     await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
+                    if (i % 10 == 0) await new Promise(resolve => setTimeout(resolve, 1000));
                 }
             }
 

@@ -31,6 +31,7 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
 }
 
 const postImage = async post => {
+    console.log(` tmp/${post.id}.png`);
 
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
@@ -38,11 +39,13 @@ const postImage = async post => {
     ctx.fillStyle = `#1B191D`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const x = 400;
-    const y = 350;
+    const x = 415;
+    const y = 535;
     const author = `Posted by u/${post.author}`;
     const points = kFormatter(post.ups);
     const title = post.title;
+    
+    ctx.drawImage(askReddit, 832, y - 320, 256, 256);
 
     ctx.drawImage(arrowUp, x, y, 32, 36);
     ctx.font = `32px IBMPlexSans Medium`;
@@ -84,6 +87,7 @@ const commentImages = async comment => {
 
     const promises = [];
     for (let i=0; i<paragraphs.length; ++i) {
+        console.log(` tmp/${comment.id}-${i}.png`);
 
         const canvas = createCanvas(1920, 1080);
         const ctx = canvas.getContext(`2d`);
@@ -126,7 +130,7 @@ const commentImages = async comment => {
     return Promise.all(promises);
 }
 
-let arrowUp, arrowDown;
+let askReddit, arrowUp, arrowDown;
 registerFont(`resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
 registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
 registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
@@ -135,12 +139,15 @@ module.exports = {
     generate: (post, comments, subreddit) => {
         return new Promise(async resolve => {
 
+            console.log(`Loading resources`);
+            askReddit = await loadImage(`resources/images/askReddit.png`);
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
 
-            console.log(`Generating images`);
-
-            await Promise.all([ postImage(post), comments.map(c => commentImages(c)) ]);
+            console.log(`Making images`);
+            await postImage(post);
+            for (const comment of comments)
+                await commentImages(comment);
 
             resolve();
 
