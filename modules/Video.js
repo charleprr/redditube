@@ -84,8 +84,8 @@ module.exports = {
             console.log(`Working on chunks`);
             let n = 0;
             const chunks = [];
-            for (let i=0; i<clips.length; i+=5, ++n) {
-                await merge(clips.slice(i, i+5), `tmp/chunk${n}.mp4`);
+            for (let i=0; i<clips.length; i+=6, ++n) {
+                await merge(clips.slice(i, i+6), `tmp/chunk${n}.mp4`);
                 chunks.push(`tmp/chunk${n}.mp4`);
             }
 

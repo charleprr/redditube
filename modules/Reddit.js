@@ -38,6 +38,8 @@ module.exports = {
 
     fetchComments: (subreddit, post_id, count, sort=`top`, time=`all`) => new Promise(async resolve => {
 
+        console.log(`Fetching comments`);
+        
         const res = await rp({
             uri: `https://www.reddit.com/${subreddit}/comments/${post_id}/${sort}.json?t=${time}`,
             json: true
