@@ -68,7 +68,8 @@ module.exports = {
             for (const comment of comments) {
 
                 cuts = [];
-                for (let i=0; i<comment.paragraphs.length; ++i) {
+                const iterations = comment.paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
+                for (let i=0; i<iterations; ++i) {
                     let cut = await create(`${comment.id}-${i}`);
                     cuts.push(cut);
                 }

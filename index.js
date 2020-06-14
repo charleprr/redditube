@@ -1,5 +1,5 @@
 const Redditube = require(`./modules/Redditube.js`);
 
 (async () => {
-    await Redditube.make(`r/AskReddit`, 5, `top`, `month`);
+    await Redditube.make(`r/AskReddit`, 3, `top`, `month`);
 })();

@@ -36,8 +36,13 @@ module.exports = {
             await TTS(`${subreddit.replace(`/`, ` slash `)} by ${post.author}. ${post.title}`, `tmp/${post.id}.mp3`);
             for (const comment of comments) {
                 const paragraphs = comment.paragraphs;
-                for (let i=0; i<paragraphs.length; ++i) {
-                    await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
+                const iterations = paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
+                for (let i=0; i<iterations; ++i) {
+                    if (i < paragraphs.length) {
+                        await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
+                    } else {
+                        await TTS(comment.reply.paragraphs[i-paragraphs.length], `tmp/${comment.id}-${i}.mp3`);
+                    }
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
             }

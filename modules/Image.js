@@ -40,13 +40,14 @@ const postImage = async post => {
     ctx.fillStyle = `#1B191D`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const x = 415;
-    const y = 535;
+    const x = 420;
+    const y = 540;
     const author = `Posted by u/${post.author}`;
     const points = kFormatter(post.ups);
     const title = post.title;
+    const awards = post.awards;
     
-    ctx.drawImage(askReddit, 832, y - 320, 256, 256);
+    ctx.drawImage(sticker, 832, y - 320, 256, 256);
 
     ctx.drawImage(arrowUp, x, y, 32, 36);
     ctx.font = `32px IBMPlexSans Medium`;
@@ -59,8 +60,8 @@ const postImage = async post => {
     wrapText(ctx, author, x + 92, y + 17, 1000, 48);
     
     let icon;
-    for (let i=0; i<post.awards.length; ++i) {
-        icon = await loadImage(post.awards[i].url);
+    for (let i=0; i<awards.length; ++i) {
+        icon = await loadImage(awards[i].url);
         ctx.drawImage(icon, x + ctx.measureText(author).width + i*40 + 102, y - 5, 30, 30);
     }
     
@@ -78,18 +79,20 @@ const postImage = async post => {
 
 const commentImages = async comment => {
 
-    const x = 180;
-    const y = 145;
-
-    const author = comment.author;
-    const points = `${kFormatter(comment.ups)} points`;
-    const awards = comment.awards;
-    const paragraphs = comment.paragraphs;
+    let x = 180;
+    let y = 145;
+    let author = comment.author;
+    let points = `${kFormatter(comment.ups)} points`;
+    let awards = comment.awards;
+    let paragraphs = comment.paragraphs;
     const reply = comment.reply;
 
     let icon, end;
     const promises = [];
-    for (let i=0; i<paragraphs.length; ++i) {
+    const iterations = paragraphs.length + (reply ? reply.paragraphs.length : 0);
+
+    for (let i=0; i<iterations; ++i) {
+
         console.log(` -> tmp/${comment.id}-${i}.png`);
 
         const canvas = createCanvas(1920, 1080);
@@ -113,12 +116,45 @@ const commentImages = async comment => {
         
         for (let j=0; j<awards.length; ++j) {
             icon = await loadImage(awards[j].url);
-            ctx.drawImage(icon, x + wAuthor + wPoints + j*40 + 90, y - 5, 30, 30);
+            ctx.drawImage(icon, x + wAuthor + wPoints + j * 40 + 90, y - 5, 30, 30);
         }
         
         ctx.font = `30px Noto Sans`;
         ctx.fillStyle = `#D7DADC`;
         end = wrapText(ctx, paragraphs.slice(0, i + 1).join(`\n`), x + 70, y + 72, 1300, 40);
+
+        if (i + 1 > paragraphs.length) {
+
+            x = 240;
+            y = end + 60;
+            author = reply.author;
+            points = `${kFormatter(reply.ups)} points`;
+            awards = reply.awards;
+            paragraphs = reply.paragraphs;
+        
+            ctx.drawImage(arrowUp, x, y, 32, 36);
+            ctx.drawImage(arrowDown, x, y + 50, 32, 36);
+
+            ctx.font = `24px IBMPlexSans Regular`;
+            ctx.fillStyle = `#D7DADC`;
+            const wAuthor = ctx.measureText(author).width;
+            ctx.fillText(author, x + 70, y + 20);
+            
+            ctx.font = `24px IBMPlexSans Regular`;
+            ctx.fillStyle = `#818384`;
+            const wPoints = ctx.measureText(points).width;
+            ctx.fillText(points, x + 79 + wAuthor, y + 20);
+            
+            for (let j=0; j<awards.length; ++j) {
+                icon = await loadImage(awards[j].url);
+                ctx.drawImage(icon, x + wAuthor + wPoints + j * 40 + 90, y - 5, 30, 30);
+            }
+            
+            ctx.font = `30px Noto Sans`;
+            ctx.fillStyle = `#D7DADC`;
+            end = wrapText(ctx, paragraphs.slice(0, (i-comment.paragraphs.length) + 1).join(`\n`), x + 70, y + 72, 1240, 40);
+
+        }
 
         promises.push(new Promise(resolve => {
             const out = fs.createWriteStream(`tmp/${comment.id}-${i}.png`);
@@ -127,26 +163,12 @@ const commentImages = async comment => {
             out.on(`finish`, () => resolve());
         }));
 
-        if (reply && i==paragraphs.length-1) {
-            
-            const x = 240;
-            const y = end + 70;
-            
-            const author = reply.author;
-            const points = `${kFormatter(reply.ups)} points`;
-            const awards = reply.awards;
-            const paragraphs = reply.paragraphs;
-            
-
-        
-        }
-
     }
 
     return Promise.all(promises);
 }
 
-let askReddit, arrowUp, arrowDown;
+let sticker, arrowUp, arrowDown;
 registerFont(`resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
 registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
 registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
@@ -156,13 +178,16 @@ module.exports = {
         return new Promise(async resolve => {
 
             console.log(`Making image files`);
-            askReddit = await loadImage(`resources/images/askReddit.png`);
+            
+            sticker = await loadImage(`resources/images/askReddit.png`);
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
 
             await postImage(post);
-            for (const comment of comments)
+            
+            for (const comment of comments) {
                 await commentImages(comment);
+            }
 
             resolve();
 
