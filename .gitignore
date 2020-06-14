@@ -1,6 +1,6 @@
 # Temporary resources
 tmp/*
-final_video.mp4
+./*.mp4
 
 # Logs
 logs

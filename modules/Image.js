@@ -7,6 +7,7 @@
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
+
 const { loadImage, registerFont, createCanvas } = require(`canvas`);
 const fs = require(`fs`);
 
@@ -31,7 +32,7 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
 }
 
 const postImage = async post => {
-    console.log(` tmp/${post.id}.png`);
+    console.log(` -> tmp/${post.id}.png`);
 
     const canvas = createCanvas(1920, 1080);
     const ctx = canvas.getContext(`2d`);
@@ -84,10 +85,12 @@ const commentImages = async comment => {
     const points = `${kFormatter(comment.ups)} points`;
     const awards = comment.awards;
     const paragraphs = comment.paragraphs;
+    const reply = comment.reply;
 
+    let icon, end;
     const promises = [];
     for (let i=0; i<paragraphs.length; ++i) {
-        console.log(` tmp/${comment.id}-${i}.png`);
+        console.log(` -> tmp/${comment.id}-${i}.png`);
 
         const canvas = createCanvas(1920, 1080);
         const ctx = canvas.getContext(`2d`);
@@ -108,7 +111,6 @@ const commentImages = async comment => {
         const wPoints = ctx.measureText(points).width;
         ctx.fillText(points, x + 79 + wAuthor, y + 20);
         
-        let icon;
         for (let j=0; j<awards.length; ++j) {
             icon = await loadImage(awards[j].url);
             ctx.drawImage(icon, x + wAuthor + wPoints + j*40 + 90, y - 5, 30, 30);
@@ -116,7 +118,7 @@ const commentImages = async comment => {
         
         ctx.font = `30px Noto Sans`;
         ctx.fillStyle = `#D7DADC`;
-        wrapText(ctx, paragraphs.slice(0, i + 1).join(`\n`), x + 70, y + 72, 1300, 40);
+        end = wrapText(ctx, paragraphs.slice(0, i + 1).join(`\n`), x + 70, y + 72, 1300, 40);
 
         promises.push(new Promise(resolve => {
             const out = fs.createWriteStream(`tmp/${comment.id}-${i}.png`);
@@ -124,6 +126,20 @@ const commentImages = async comment => {
             stream.pipe(out);
             out.on(`finish`, () => resolve());
         }));
+
+        if (reply && i==paragraphs.length-1) {
+            
+            const x = 240;
+            const y = end + 70;
+            
+            const author = reply.author;
+            const points = `${kFormatter(reply.ups)} points`;
+            const awards = reply.awards;
+            const paragraphs = reply.paragraphs;
+            
+
+        
+        }
 
     }
 
@@ -136,15 +152,14 @@ registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Re
 registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
 
 module.exports = {
-    generate: (post, comments, subreddit) => {
+    generate: (subreddit, post, comments) => {
         return new Promise(async resolve => {
 
-            console.log(`Loading resources`);
+            console.log(`Making image files`);
             askReddit = await loadImage(`resources/images/askReddit.png`);
             arrowUp = await loadImage(`resources/images/arrowUp.png`);
             arrowDown = await loadImage(`resources/images/arrowDown.png`);
 
-            console.log(`Making image files`);
             await postImage(post);
             for (const comment of comments)
                 await commentImages(comment);
