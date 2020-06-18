@@ -46,7 +46,7 @@ const backgroundMusic = (file, output) => {
 	video.addInput(`tmp/chunks.mp4`);
 	video.addInput(file);
 	video.addOptions([
-        `-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.25[1a];[0a][1a]amerge[a]`,
+        `-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.2[1a];[0a][1a]amerge[a]`,
         `-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
     ]);
 	return new Promise(resolve => {
@@ -89,11 +89,11 @@ module.exports = {
                 chunks.push(`tmp/chunk${n}.mp4`);
             }
 
-            console.log(`Merging chunks`);
+            console.log(`Merging`);
             await merge(chunks, `tmp/chunks.mp4`);
             
             console.log(`Adding the background music`);
-            await backgroundMusic(`resources/music/lofi-1.mp3`, `${post.id}.mp4`);
+            await backgroundMusic(`resources/music/lof${Math.ceil(Math.random()*4)}.mp3`, `${post.id}.mp4`);
 
 			resolve();
         });

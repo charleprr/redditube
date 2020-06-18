@@ -8,11 +8,23 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 
+// 60 reqs per minute
+
 const rp = require('request-promise');
 
 module.exports = {
 
-    fetchRandomPost: (subreddit, sort=`top`, time=`all`, limit=30) => new Promise(async resolve => {
+    /**
+     * Fetch a random post from Reddit.
+     * 
+     * @param {String} subreddit  The subreddit to fetch a post from.
+     * @param {String} [sort=top] Sorting (relevance, hot, top, new, comments).
+     * @param {String} [time=all] Time (hour, day, week, month, year, all).
+     * @param {Number} [limit=30] 
+     * 
+     * @return {Object} Reddit post.
+     */
+    fetchRandomPost: (subreddit, sort=`top`, time=`all`, limit=25) => new Promise(async resolve => {
 
         const res = await rp({
             uri: `https://www.reddit.com/${subreddit}/${sort}.json?&t=${time}&limit=${limit}`,
@@ -52,12 +64,18 @@ module.exports = {
                 link_id: comment.data.link_id.substr(3),
                 author: comment.data.author,
                 body: comment.data.body,
-                paragraphs: comment.data.body.split(/\n(?!.)/g),
+                paragraphs: comment.data.body.split(/\n(?![^\n])/g),
                 ups: comment.data.ups,
                 awards: comment.data.all_awardings.map(award => Object({
                     name: award.name, count: award.count, url: award.icon_url
                 }))
             };
+
+            /*
+            console.log(comment.body);
+            console.log(comment.paragraphs);
+            console.log(`-------------------------------------------------`);
+            */
 
             if (comment.body.length < 1000) {
 
@@ -75,7 +93,7 @@ module.exports = {
                         comment.reply = {
                             id: reply.data.id,
                             body: reply.data.body,
-                            paragraphs: reply.data.body.split(/\n(?!.)/g),
+                            paragraphs: reply.data.body.split(/\n(?![^\n])/g),
                             author: reply.data.author,
                             ups: reply.data.ups,
                             awards: reply.data.all_awardings.map(award => Object({

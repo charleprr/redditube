@@ -18,7 +18,7 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
         const words = paragraph.split(` `);
         let line = ``;
         for (let word of words) {
-            line = line + word + ` `;
+            line = `${line}${word} `;
             if (context.measureText(line).width > maxWidth) {
                 context.fillText(line, x, y);
                 y += lineHeight;
@@ -28,6 +28,7 @@ const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
         context.fillText(line, x, y);
         y += lineHeight;
     }
+    if (y - lineHeight > 1080) console.warn(`Warning: comment has gone out of frame`);
     return y - lineHeight;
 }
 
@@ -125,34 +126,34 @@ const commentImages = async comment => {
 
         if (i + 1 > paragraphs.length) {
 
-            x = 240;
-            y = end + 60;
-            author = reply.author;
-            points = `${kFormatter(reply.ups)} points`;
-            awards = reply.awards;
-            paragraphs = reply.paragraphs;
+            let rx = 240;
+            let ry = end + 60;
+            let rauthor = reply.author;
+            let rpoints = `${kFormatter(reply.ups)} points`;
+            let rawards = reply.awards;
+            let rparagraphs = reply.paragraphs;
         
-            ctx.drawImage(arrowUp, x, y, 32, 36);
-            ctx.drawImage(arrowDown, x, y + 50, 32, 36);
+            ctx.drawImage(arrowUp, rx, ry, 32, 36);
+            ctx.drawImage(arrowDown, rx, ry + 50, 32, 36);
 
             ctx.font = `24px IBMPlexSans Regular`;
             ctx.fillStyle = `#D7DADC`;
-            const wAuthor = ctx.measureText(author).width;
-            ctx.fillText(author, x + 70, y + 20);
+            const wAuthor = ctx.measureText(rauthor).width;
+            ctx.fillText(rauthor, rx + 70, ry + 20);
             
             ctx.font = `24px IBMPlexSans Regular`;
             ctx.fillStyle = `#818384`;
-            const wPoints = ctx.measureText(points).width;
-            ctx.fillText(points, x + 79 + wAuthor, y + 20);
+            const wPoints = ctx.measureText(rpoints).width;
+            ctx.fillText(rpoints, rx + 79 + wAuthor, ry + 20);
             
-            for (let j=0; j<awards.length; ++j) {
-                icon = await loadImage(awards[j].url);
-                ctx.drawImage(icon, x + wAuthor + wPoints + j * 40 + 90, y - 5, 30, 30);
+            for (let j=0; j<rawards.length; ++j) {
+                icon = await loadImage(rawards[j].url);
+                ctx.drawImage(icon, rx + wAuthor + wPoints + j * 40 + 90, ry - 5, 30, 30);
             }
             
             ctx.font = `30px Noto Sans`;
             ctx.fillStyle = `#D7DADC`;
-            end = wrapText(ctx, paragraphs.slice(0, (i-comment.paragraphs.length) + 1).join(`\n`), x + 70, y + 72, 1240, 40);
+            wrapText(ctx, rparagraphs.slice(0, (i-comment.paragraphs.length) + 1).join(`\n`), rx + 70, ry + 72, 1240, 40);
 
         }
 
