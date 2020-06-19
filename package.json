@@ -23,16 +23,10 @@
   },
   "homepage": "https://github.com/charlypoirier/redditube#readme",
   "dependencies": {
-    "@google-cloud/local-auth": "^0.1.0",
+    "snoowrap": "^1.21.0",
     "@google-cloud/text-to-speech": "^2.3.0",
-    "canvas": "^2.6.1",
-    "google-auth-library": "^6.0.0",
-    "googleapis": "^51.0.0",
-    "mp3-duration": "^1.1.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.5",
     "util": "^0.12.3",
-    "video-stitch": "^1.6.0",
-    "videoshow": "^0.1.12"
+    "canvas": "^2.6.1",
+    "fluent-ffmpeg": "^2.1.2"
   }
 }
