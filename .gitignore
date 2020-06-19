@@ -2,6 +2,9 @@
 tmp/*
 *.mp4
 
+# Secrets
+config.json
+
 # Logs
 logs
 *.log
