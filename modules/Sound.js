@@ -29,23 +29,31 @@ function TTS(text, output) {
 }
 
 module.exports = {
-    generate: (subreddit, post, comments) => new Promise(async resolve => {
 
-        await TTS(`${subreddit.replace(`/`, ` slash `)} by ${post.author}. ${post.title}`, `tmp/${post.id}.mp3`);
-        for (const comment of comments) {
-            const paragraphs = comment.paragraphs;
-            const iterations = paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
-            for (let i=0; i<iterations; ++i) {
-                if (i < paragraphs.length) {
-                    await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
-                } else {
-                    await TTS(comment.reply.paragraphs[i-paragraphs.length], `tmp/${comment.id}-${i}.mp3`);
+    /**
+     * Generates all the sounds needed for the video
+     * and saves them in the temporary folder.
+     * 
+     * @param {Object} submission A reddit submission
+     */
+    generate: function (submission) {
+        return new Promise(async resolve => {
+
+            await TTS(`${subreddit.replace(`/`, ` slash `)} by ${post.author}. ${post.title}`, `tmp/${post.id}.mp3`);
+            for (const comment of comments) {
+                const paragraphs = comment.paragraphs;
+                const iterations = paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
+                for (let i=0; i<iterations; ++i) {
+                    if (i < paragraphs.length) {
+                        await TTS(paragraphs[i], `tmp/${comment.id}-${i}.mp3`);
+                    } else {
+                        await TTS(comment.reply.paragraphs[i-paragraphs.length], `tmp/${comment.id}-${i}.mp3`);
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
-                await new Promise(resolve => setTimeout(resolve, 500));
             }
-        }
 
-        resolve();
-        
-    })
+            resolve();
+        });
+    }
 };

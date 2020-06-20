@@ -11,6 +11,22 @@
 const { loadImage, registerFont, createCanvas } = require(`canvas`);
 const fs = require(`fs`);
 
+let initialized = false;
+let questionMark, upvote, downvote;
+
+function initialize () {
+    registerFont(`resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
+    registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
+    registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
+    return new Promise (async resolve => {
+        questionMark = await loadImage(`resources/images/askReddit.png`);
+        upvote = await loadImage(`resources/images/arrowUp.png`);
+        downvote = await loadImage(`resources/images/arrowDown.png`);
+        initialized = true;
+        resolve();
+    })
+}
+
 const kFormatter = num => Math.abs(num) > 999 ? `${Math.sign(num)*((Math.abs(num)/1000).toFixed(1))}k` : Math.sign(num)*Math.abs(num);
 const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
     text = text.split(`\n`);
@@ -169,29 +185,28 @@ const commentImages = async comment => {
     return Promise.all(promises);
 }
 
-let sticker, arrowUp, arrowDown;
-registerFont(`resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
-registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
-registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
 
 module.exports = {
-    generate: (subreddit, post, comments) => {
+
+    /**
+     * Generates all the images needed for the video
+     * and saves them in the temporary folder.
+     * 
+     * @param {Object} submission A reddit submission
+     */
+    generate: function (submission) {
+
         return new Promise(async resolve => {
 
-            console.log(`Making image files`);
-            
-            sticker = await loadImage(`resources/images/askReddit.png`);
-            arrowUp = await loadImage(`resources/images/arrowUp.png`);
-            arrowDown = await loadImage(`resources/images/arrowDown.png`);
+            if (!initialized)
+                await initialize(); 
 
-            await postImage(post);
-            
-            for (const comment of comments) {
+            await postImage(submission);
+            for (const comment of submission.comments) {
                 await commentImages(comment);
             }
 
             resolve();
-
         });
     }
 };

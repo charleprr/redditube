@@ -16,28 +16,37 @@ const Video = require(`./Video.js`);
 
 module.exports = {
 
-    make: (id) => new Promise(async resolve => {
+    /**
+     * Make a video from a Reddit submission ID.
+     * 
+     * @param {Number} id The ID of a Reddit submission
+     * 
+     * @return {String} Path to the generated video file
+     */
+    make: function (id) {
 
         console.log(`Making a video from Reddit`);
-        
-        const submission = await Reddit.fetch(id);
-        await Image.generate(submission);
-        await Sound.generate(submission);
-        await Video.generate(submission);
 
-        console.log(`Video has been successfully generated`);
+        return new Promise(async resolve => {
 
-        require(`fs`).readdir(`tmp`, (err, files) => {
-            if (err) throw err;
-            for (const file of files) {
-                fs.unlink(`tmp/${file}`, err => {
-                    if (err) throw err;
-                });
-            }
+            const submission = await Reddit.fetch(id);
+            await Image.generate(submission);
+            await Sound.generate(submission);
+            await Video.generate(submission);
+
+            console.log(`Video has been successfully generated`);
+
+            require(`fs`).readdir(`tmp`, (err, files) => {
+                if (err) throw err;
+                for (const file of files) {
+                    fs.unlink(`tmp/${file}`, err => {
+                        if (err) throw err;
+                    });
+                }
+            });
+
+            resolve(`${id}.mp4`);
         });
-
-        resolve(`${id}.mp4`);
-
-    })
+    }
 
 };
