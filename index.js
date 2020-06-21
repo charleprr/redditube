@@ -21,5 +21,5 @@ const Redditube = require(`./modules/Redditube.js`);
 */
 
 (async () => {
-    await Redditube.make(`hbsat8`, 3);
+    await Redditube.make(`hbsat8`);
 })();
