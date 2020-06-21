@@ -27,6 +27,7 @@ const format = submission => ({
         id: comment.id,
         author: comment.author.name,
         body: comment.body,
+        paragraphs: comment.body.match(/(.+(?:\n+|$))/gm),
         ups: comment.ups,
         awards: comment.all_awardings.map(award => ({
             url: award.icon_url,
@@ -35,6 +36,7 @@ const format = submission => ({
         replies: comment.replies.map(reply => ({
             id: reply.id,
             body: reply.body,
+            paragraphs: reply.body.match(/(.+(?:\n+|$))/gm),
             author: reply.author.name,
             ups: reply.ups,
             awards: reply.all_awardings.map(award => ({
