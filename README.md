@@ -1,6 +1,7 @@
 <center><img src='resources/images/logo_transparent.png' height='80px' style='border-radius: 10px;'/></center>
 
 # Redditube
+
 A video generator from Reddit submissions and comments.
 
 ## Installation
@@ -10,9 +11,9 @@ Inside the project directory, run `npm install` to install dependencies.
 ## Configuration
 
 You will need to create a new file, called `config.json` at the root of the project.
-There are two ways to fill it:
+Fill it with one of the following options:
 
-1. By using a script-type Reddit app (Check [Reddit preferences](https://ssl.reddit.com/prefs/apps/) to create yours).
+1. By using a script-type Reddit app (check [Reddit preferences](https://ssl.reddit.com/prefs/apps/) to create yours).
 ```json
 {
     "userAgent": "put your user-agent string here",
@@ -23,7 +24,7 @@ There are two ways to fill it:
 }
 ```
 
-2. By using OAuth credentials (See [reddit-oauth-helper](https://github.com/not-an-aardvark/reddit-oauth-helper) for help).
+2. By using OAuth credentials (see [reddit-oauth-helper](https://github.com/not-an-aardvark/reddit-oauth-helper) for help).
 ```json
 {
     "userAgent": "put your user-agent string here",
