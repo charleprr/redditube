@@ -6,7 +6,8 @@
 
 ### Installation
 
-You'll need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.
+You will need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.<br/>
+Then, run `npm i redditube`.
 
 ### Importation
 
