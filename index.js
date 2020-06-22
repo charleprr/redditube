@@ -44,10 +44,6 @@ module.exports = {
             await Sound.generate(submission);
             await Video.generate(submission);
 
-            // Pour chaque commentaire
-            //   Générer les images et les sons
-            //   Fusionner en mp4
-
             console.log(`Video has been successfully generated`);
             
             resolve(`${submission.id}.mp4`);
