@@ -1,16 +1,18 @@
 <p align="center">
-  <img src="./resources/images/logo_transparent.png" width="100"><br/>
+  <img src="./resources/images/redditube.png" width="100"><br/>
   <b>Redditube</b><br/>
   A video generator from Reddit submissions and comments
 </p>
 
 ### Installation
 
+Make you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.
+
 Inside the project directory, run `npm install` to install dependencies.
 
 ### Configuration
 
-You will need to create a new file, called `config.json` at the root of the project.<br/>
+You will need to create a `config.json` file at the root of the project.<br/>
 Fill it with one of the following options:
 
 1. By using a script-type Reddit app (check [Reddit preferences](https://ssl.reddit.com/prefs/apps/) to create yours).
@@ -36,7 +38,7 @@ Fill it with one of the following options:
 
 ### Generate a video
 
-Inside the project directory, run `node index.js <submission_id>`.
+`node index.js <submission_id>`
 
 The submission id can be found in the URL when browsing Reddit.<br/>
 In `www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/`, the submission id is `f9cufu`.
