@@ -47,10 +47,12 @@ Use `make(submissionId [, numberOfComments=15])`.<br/>
 It supports ES6 and returns a Promise.
 
 ```js
-// Specifying the submission id only (will generate a video with 15 comments)
+// Specifying the submission id only,
+// will generate a video with 15 comments
 Redditube.make(`f9cufu`);
 
-// Specifying the number of comments to include in the video.
+// Specifying the number of comments
+// to include in the video
 Redditube.make(`f9cufu`, 10);
 ```
 
