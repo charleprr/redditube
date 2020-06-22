@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./resources/images/logo_transparent.png" width="120"><br/>
+  <img src="./resources/images/logo_transparent.png" width="100"><br/>
   <b>Redditube</b><br/>
   A video generator from Reddit submissions and comments
 </p>
