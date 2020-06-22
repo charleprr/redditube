@@ -1,4 +1,6 @@
-<center><img src='resources/images/logo_transparent.png' height='45px' style='border-radius: 10px;'/></center>
+<p align="center">
+  <img src="./resources/images/logo_transparent.png" width="120">
+</p>
 
 # Redditube
 
