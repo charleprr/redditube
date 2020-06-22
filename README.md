@@ -6,8 +6,7 @@
 
 ### Installation
 
-Make you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.
-
+Make sure you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.<br/>
 Inside the project directory, run `npm install` to install dependencies.
 
 ### Configuration
