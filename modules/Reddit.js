@@ -2,15 +2,14 @@
  * @name Redditube
  * @version 1.0.0
  * 
- * From posts and comments on Reddit
- * to a video uploaded on Youtube!
+ * A video generator from Reddit
+ * submissions and comments.
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
 
 const Snoowrap = require(`snoowrap`);
-const configuration = require(`../config.json`);
-const reddit = new Snoowrap(configuration);
+let reddit = null;
 
 const format = submission => ({
     id: submission.id,
@@ -50,6 +49,16 @@ const format = submission => ({
 module.exports = {
 
     /**
+     * Configure authentification parameters
+     * for Reddit.
+     * 
+     * @param {Object} configuration The configuration object
+     */
+    config: function (configuration) {
+        reddit = new Snoowrap(configuration);
+    },
+
+    /**
      * Fetch a submission from reddit.
      * 
      * Given a submission ID, this function will
@@ -60,10 +69,15 @@ module.exports = {
      * 
      * @return {Object} The submission
      */
-    fetch: (id) => new Promise (async resolve => {
-        const submission = await reddit.getSubmission(id).fetch();
-        resolve(format(submission));
-    }),
+    fetch: function (id) {
+        return new Promise ((resolve, reject) => {
+            if (reddit) {
+                reddit.getSubmission(id).fetch().then(submission => {
+                    resolve(format(submission));
+                }).catch(reject);
+            } else reject(`Reddit authentification has not been configured!`);
+        });
+    },
 
     /**
      * Fetch a random submission from reddit.
@@ -77,9 +91,14 @@ module.exports = {
      * 
      * @return {Object} The submission
      */
-    fetchRandom: (subreddit) => new Promise (async resolve => {
-        const submission = await reddit.getRandomSubmission(subreddit).fetch();
-        resolve(format(submission));
-    })
+    fetchRandom: function (subreddit) {
+        return new Promise ((resolve, reject) => {
+            if (reddit) {
+                reddit.getRandomSubmission(subreddit).fetch().then(submission => {
+                    resolve(format(submission));
+                }).catch(reject);
+            } else reject(`Reddit authentification has not been configured!`);
+        });
+    }
 
 }
