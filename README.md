@@ -1,4 +1,6 @@
 <center><img src='resources/images/logo_transparent.png' height='80px' style='border-radius: 10px;'/></center>
+
+# Redditube
 A video generator from Reddit submissions and comments.
 
 ## Installation
@@ -31,8 +33,8 @@ There are two ways to fill it:
 }
 ```
 
-## Execution
+## Generate a video
 
 Run `node index.js <submission_id>` at the root of the project.
 
-Ex: `node index.js gp6zld`
+The submission id can be found in the URL when browsing Reddit. In `www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/`, the submission id is `f9cufu`.
