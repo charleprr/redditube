@@ -1,9 +1,7 @@
-# Temporary resources
+# Temporary
 tmp/*
 *.mp4
-
-# Secrets
-config.json
+test.js
 
 # Logs
 logs
