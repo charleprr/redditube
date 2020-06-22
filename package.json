@@ -1,7 +1,7 @@
 {
   "name": "redditube",
   "version": "1.0.0",
-  "description": "From posts and comments on Reddit to a video uploaded on Youtube!",
+  "description": "A video generator from Reddit submissions and comments",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,14 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/charlypoirier/redditube.git"
   },
-  "keywords": [
-    "reddit",
-    "youtube",
-    "video",
-    "generator"
-  ],
-  "author": "Charly POIRIER",
-  "license": "ISC",
+  "keywords": [ "reddit", "youtube", "video", "generator" ],
+  "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/charlypoirier/redditube/issues"
   },
