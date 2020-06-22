@@ -4,7 +4,7 @@
   "description": "A video generator from Reddit submissions and comments",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests.js"
   },
   "repository": {
     "type": "git",
