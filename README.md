@@ -4,13 +4,13 @@
 
 A video generator from Reddit submissions and comments.
 
-## Installation
+### Installation
 
 Inside the project directory, run `npm install` to install dependencies.
 
-## Configuration
+### Configuration
 
-You will need to create a new file, called `config.json` at the root of the project.
+You will need to create a new file, called `config.json` at the root of the project.<br/>
 Fill it with one of the following options:
 
 1. By using a script-type Reddit app (check [Reddit preferences](https://ssl.reddit.com/prefs/apps/) to create yours).
@@ -34,8 +34,9 @@ Fill it with one of the following options:
 }
 ```
 
-## Generate a video
+### Generate a video
 
 Run `node index.js <submission_id>` at the root of the project.
 
-The submission id can be found in the URL when browsing Reddit. In `www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/`, the submission id is `f9cufu`.
+The submission id can be found in the URL when browsing Reddit.<br/>
+In `www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/`, the submission id is `f9cufu`.
