@@ -1,25 +1,67 @@
-const Redditube = require(`./modules/Redditube.js`);
-
 /**
- * [x] Replies with >1 paragraphs
- * [x] Background music is not so good after a while
- * [ ] Pargraphs array with '' strings
- * [ ] Comments going out of frame
- * [ ] Video randomly cuts at ~13min
- * [ ] Links in comments
- * [ ] Deleted comments
- *
- *  comments |   time   |  video
- *  3        | 00:11:00 | 00:01:30
- *  4        | 00:10:00 | 00:01:00
- *  4        | 00:17:00 | 00:02:00
- *  6        | 00:17:00 | 00:02:00
- *  8        | 00:12:00 | 00:01:30
- *  15       | 00:54:00 | 00:06:43
- *  20       |          |
- *  30       | 02:23:00 | 00:13:00
+ * @name Redditube
+ * @version 1.0.0
+ * 
+ * A video generator from Reddit
+ * submissions and comments.
+ * 
+ * @copyright (C) 2020 by Charly Poirier
 */
 
-(async () => {
-    await Redditube.make(`hbsat8`);
-})();
+const Reddit = require(`./modules/Reddit.js`);
+const Image = require(`./modules/Image.js`);
+const Sound = require(`./modules/Sound.js`);
+const Video = require(`./modules/Video.js`);
+
+module.exports = {
+
+    /**
+     * Configure authentification parameters
+     * for Reddit.
+     * 
+     * @param {Object} configuration The configuration object
+     */
+    config: Reddit.config,
+
+    /**
+     * Make a video from a Reddit submission ID.
+     * 
+     * @param {String} id               The ID of a Reddit submission
+     * @param {Number} numberOfComments The number of 1st-level comments to put in the video
+     * 
+     * @return {String} Path to the generated video file
+     */
+    make: function (id, numberOfComments=15) {
+
+        return new Promise(async resolve => {
+
+            const submission = await Reddit.fetch(id);
+            submission.comments = submission.comments.slice(0, numberOfComments);
+
+            console.log(submission.title);
+
+            await Image.generate(submission);
+            await Sound.generate(submission);
+            await Video.generate(submission);
+
+            // Pour chaque commentaire
+            //   Générer les images et les sons
+            //   Fusionner en mp4
+
+            console.log(`Video has been successfully generated`);
+            
+            resolve(`${submission.id}.mp4`);
+
+            require(`fs`).readdir(`tmp`, (err, files) => {
+                if (err) throw err;
+                for (const file of files) {
+                    fs.unlink(`tmp/${file}`, err => {
+                        if (err) throw err;
+                    });
+                }
+            });
+
+        });
+    }
+
+};
