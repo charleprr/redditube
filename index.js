@@ -31,23 +31,31 @@ module.exports = {
      * 
      * @return {String} Path to the generated video file
      */
-    make: function (id, numberOfComments=15) {
-
+    make: function (id) {
         return new Promise(async resolve => {
 
+            // 1. Fetch the submission
             const submission = await Reddit.fetch(id);
-            submission.comments = submission.comments.slice(0, numberOfComments);
-
-            console.log(submission.title);
-
-            await Image.generate(submission);
-            await Sound.generate(submission);
-            await Video.generate(submission);
-
-            console.log(`Video has been successfully generated`);
             
-            resolve(`${submission.id}.mp4`);
+            // 2. Make clips
+            const clips = [];
 
+            let screenshot = await Image.screenshot(submission);
+            let narration = await Sound.narrate(submission);
+            let clip = await Video.make(screenshot, narration);
+            clips.push(clip);
+
+            for (let i=0; i<3; ++i) {
+                screenshot = await Image.screenshot(submission.comments[i]);
+                narration = await Sound.narrate(submission.comments[i]);
+                clip = await Video.make(screenshot, narration);
+                clips.push(clip);
+            }
+
+            // 3. Edit the final video
+            const filename = Video.edit(clips);
+
+            // 4. Remove temporary files
             require(`fs`).readdir(`tmp`, (err, files) => {
                 if (err) throw err;
                 for (const file of files) {
@@ -57,6 +65,7 @@ module.exports = {
                 }
             });
 
+            resolve(filename);
         });
     }
 
