@@ -53,7 +53,7 @@ module.exports = {
             }
 
             // 3. Edit the final video
-            const filename = Video.edit(clips);
+            const filename = await Video.edit(clips);
 
             // 4. Remove temporary files
             require(`fs`).readdir(`tmp`, (err, files) => {
