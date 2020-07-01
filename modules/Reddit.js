@@ -14,6 +14,7 @@ let reddit = null;
 const format = submission => ({
     id: submission.id,
     subreddit: submission.subreddit.display_name,
+    isSubmission: true,
     title: submission.title,
     body: submission.body,
     author: submission.author.name,
