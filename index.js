@@ -26,12 +26,12 @@ module.exports = {
     /**
      * Make a video from a Reddit submission ID.
      * 
-     * @param {String} id               The ID of a Reddit submission
-     * @param {Number} numberOfComments The number of 1st-level comments to put in the video
+     * @param {String} id   The ID of a Reddit submission
+     * @param {Number} n    The number of 1st-level comments to put in the video
      * 
      * @return {String} Path to the generated video file
      */
-    make: function (id) {
+    make: function (id, n) {
         return new Promise(async resolve => {
 
             // 1. Fetch the submission
@@ -45,7 +45,7 @@ module.exports = {
             let clip = await Video.make(screenshot, narration);
             clips.push(clip);
 
-            for (let i=0; i<3; ++i) {
+            for (let i=0; i<n; ++i) {
                 screenshot = await Image.screenshot(submission.comments[i]);
                 narration = await Sound.narrate(submission.comments[i]);
                 clip = await Video.make(screenshot, narration);
