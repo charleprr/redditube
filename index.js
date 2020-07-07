@@ -9,8 +9,8 @@
 */
 
 const Reddit = require(`./modules/Reddit.js`);
-const Image = require(`./modules/Image.js`);
-const Sound = require(`./modules/Sound.js`);
+const Screenshot = require(`./modules/Screenshot.js`);
+const Voiceover = require(`./modules/Voiceover.js`);
 const Video = require(`./modules/Video.js`);
 
 module.exports = {
@@ -26,47 +26,52 @@ module.exports = {
     /**
      * Make a video from a Reddit submission ID.
      * 
-     * @param {String} id   The ID of a Reddit submission
-     * @param {Number} n    The number of 1st-level comments to put in the video
+     * @param {String} id ID of a Reddit submission.
+     * @param {Number} n  Number of comments in the video.
      * 
-     * @return {String} Path to the generated video file
+     * @return {Promise<String>} Path to the generated video file.
      */
-    make: function (id, n) {
-        return new Promise(async resolve => {
+    make: async function (id, n) {
 
-            // 1. Fetch the submission
-            const submission = await Reddit.fetch(id);
+        // 1. Fetch the submission
+        const submission = await Reddit.fetch(id);
+        
+        // 2. Make clips
+        const clips = [];
+
+        const screenshot = await Screenshot.submission(submission);
+        const voiceover = await Voiceover.submission(submission);
+        let clip = await Video.make(screenshot, voiceover);
+        clips.push(clip);
+
+        for (let i=0; i<n; ++i) {
+
+            const screenshots = await Screenshot.comment(submission.comments[i]);
+            const voiceovers = await Voiceover.comment(submission.comments[i]);
             
-            // 2. Make clips
-            const clips = [];
+            assert(screenshots.length === voiceovers.length);
 
-            let screenshot = await Image.screenshot(submission);
-            let narration = await Sound.narrate(submission);
-            let clip = await Video.make(screenshot, narration);
-            clips.push(clip);
-
-            for (let i=0; i<n; ++i) {
-                screenshot = await Image.screenshot(submission.comments[i]);
-                narration = await Sound.narrate(submission.comments[i]);
-                clip = await Video.make(screenshot, narration);
+            for (let j=0; j<screenshots.length; ++j) {
+                clip = await Video.make(screenshots[j], voiceovers[j]); // ..
                 clips.push(clip);
             }
 
-            // 3. Edit the final video
-            const filename = await Video.edit(clips);
+        }
+ 
+        // 3. Edit the final video
+        const filename = await Video.edit(clips);
 
-            // 4. Remove temporary files
-            require(`fs`).readdir(`tmp`, (err, files) => {
-                if (err) throw err;
-                for (const file of files) {
-                    fs.unlink(`tmp/${file}`, err => {
-                        if (err) throw err;
-                    });
-                }
-            });
-
-            resolve(filename);
+        // 4. Remove temporary files
+        require(`fs`).readdir(`tmp`, (err, files) => {
+            if (err) throw err;
+            for (const file of files) {
+                fs.unlink(`tmp/${file}`, err => {
+                    if (err) throw err;
+                });
+            }
         });
+
+        return filename;
     }
 
 };
