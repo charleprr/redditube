@@ -49,57 +49,24 @@ const format = submission => ({
 
 module.exports = {
 
-    /**
-     * Configure authentification parameters
-     * for Reddit.
-     * 
-     * @param {Object} configuration The configuration object
-     */
     config: function (configuration) {
         reddit = new Snoowrap(configuration);
     },
 
-    /**
-     * Fetch a submission from reddit.
-     * 
-     * Given a submission ID, this function will
-     * fetch and return the submission containing
-     * two levels of comments.
-     * 
-     * @param {Number} id The ID of a Reddit submission
-     * 
-     * @return {Object} The submission
-     */
-    fetch: function (id) {
-        return new Promise ((resolve, reject) => {
-            if (reddit) {
-                reddit.getSubmission(id).fetch().then(submission => {
-                    resolve(format(submission));
-                }).catch(reject);
-            } else reject(`Reddit authentification has not been configured!`);
-        });
+    fetch: async function (id) {
+        if (reddit) {
+            return format(await reddit.getSubmission(id).fetch());
+        } else {
+            throw new Error(`Reddit authentification has not been configured!`);
+        }
     },
 
-    /**
-     * Fetch a random submission from reddit.
-     * 
-     * Given a subreddit, this function will
-     * fetch and return a random submission from
-     * the front page, containing two levels of
-     * comments.
-     * 
-     * @param {String} subreddit The name of a subreddit
-     * 
-     * @return {Object} The submission
-     */
-    fetchRandom: function (subreddit) {
-        return new Promise ((resolve, reject) => {
-            if (reddit) {
-                reddit.getRandomSubmission(subreddit).fetch().then(submission => {
-                    resolve(format(submission));
-                }).catch(reject);
-            } else reject(`Reddit authentification has not been configured!`);
-        });
+    fetchRandom: async function (subreddit) {
+        if (reddit) {
+            return format(await reddit.getRandomSubmission(subreddit).fetch());
+        } else {
+            throw new Error(`Reddit authentification has not been configured!`);
+        }
     }
 
 }
