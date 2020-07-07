@@ -10,29 +10,7 @@
 
 const ffmpeg = require(`fluent-ffmpeg`);
 
-const create = (id) => {
-    const output = `tmp/${id}.mp4`;
-    console.log(` -> ${output}`);
-    const video = new ffmpeg();
-	video.addInput(`tmp/${id}.png`);
-	video.loop();
-	video.addInput(`tmp/${id}.mp3`);
-	video.addOption(`-shortest`);
-	video.audioCodec(`libmp3lame`);
-    video.audioBitrate(128);
-	video.size(`1280x720`);
-	video.format(`mp4`);
-	video.fps(60);
-	video.videoCodec(`libx264`);
-	video.videoBitrate(5000);
-    video.addOption(`-pix_fmt yuv420p`);
-	return new Promise(resolve => {
-        video.save(output).on(`end`, () => resolve(output));
-    });
-}
-
 const merge = (clips, output) => {
-    console.log(` -> ${output}`);
     const video = new ffmpeg();
     for (const clip of clips) video.addInput(clip);
     return new Promise(resolve => {
@@ -41,7 +19,6 @@ const merge = (clips, output) => {
 }
 
 const backgroundMusic = (file, output) => {
-    console.log(` -> ${output}`);
 	const video = new ffmpeg();
 	video.addInput(`tmp/chunks.mp4`);
 	video.addInput(file);
@@ -56,55 +33,63 @@ const backgroundMusic = (file, output) => {
 
 module.exports = {
 
-    /**
-     * Generates all the video clips needed for the
-     * video and saves them in the temporary folder,
-     * then merges everything into the final video.
-     * 
-     * @param {Object} submission A reddit submission
-     */
-    generate: function (submission) {
-        return new Promise(async resolve => {
+    make: function (screenshot, narration) {
+        const output = `tmp/${Date.now()}.mp4`;
+        const video = new ffmpeg();
+        video.addInput(screenshot);
+        video.loop();
+        video.addInput(narration);
+        video.addOption(`-shortest`);
+        video.audioCodec(`libmp3lame`);
+        video.audioBitrate(128);
+        video.size(`1280x720`);
+        video.format(`mp4`);
+        video.fps(60);
+        video.videoCodec(`libx264`);
+        video.videoBitrate(5000);
+        video.addOption(`-pix_fmt yuv420p`);
+        return new Promise(resolve => {
+            video.save(output).on(`end`, () => resolve(output));
+        });
+    },
 
-            console.log(`Making video files`);
-            await create(post.id);
-            await merge([`tmp/${post.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${post.id}-glitch.mp4`);
+    edit: async function (clips) {
 
-            const clips = [`tmp/${post.id}-glitch.mp4`];
+        // smart merge
+        // add music
+        
+        await create(post.id);
+        await merge([`tmp/${post.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${post.id}-glitch.mp4`);
 
-            let cuts;
-            for (const comment of comments) {
+        const files = [`tmp/${post.id}-glitch.mp4`];
 
-                cuts = [];
-                const iterations = comment.paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
-                for (let i=0; i<iterations; ++i) {
-                    let cut = await create(`${comment.id}-${i}`);
-                    cuts.push(cut);
-                }
+        let cuts;
+        for (const comment of comments) {
 
-                await merge(cuts, `tmp/${comment.id}.mp4`);
-                await merge([`tmp/${comment.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${comment.id}-glitch.mp4`);
-
-                clips.push(`tmp/${comment.id}-glitch.mp4`);
-
+            cuts = [];
+            const iterations = comment.paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
+            for (let i=0; i<iterations; ++i) {
+                let cut = await create(`${comment.id}-${i}`);
+                cuts.push(cut);
             }
 
-            console.log(`Working on chunks`);
-            let n = 0;
-            const chunks = [];
-            for (let i=0; i<clips.length; i+=6, ++n) {
-                await merge(clips.slice(i, i+6), `tmp/chunk${n}.mp4`);
-                chunks.push(`tmp/chunk${n}.mp4`);
-            }
+            await merge(cuts, `tmp/${comment.id}.mp4`);
+            await merge([`tmp/${comment.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${comment.id}-glitch.mp4`);
 
-            console.log(`Merging`);
-            await merge(chunks, `tmp/chunks.mp4`);
-            
-            console.log(`Adding the background music`);
-            await backgroundMusic(`resources/songs/lof${Math.ceil(Math.random()*4)}.mp3`, `${post.id}.mp4`);
+            clips.push(`tmp/${comment.id}-glitch.mp4`);
 
-            resolve();
-        })
+        }
+
+        let n = 0;
+        const chunks = [];
+        for (let i=0; i<clips.length; i+=6, ++n) {
+            await merge(clips.slice(i, i+6), `tmp/chunk${n}.mp4`);
+            chunks.push(`tmp/chunk${n}.mp4`);
+        }
+
+        await merge(chunks, `tmp/chunks.mp4`);
+        await backgroundMusic(`resources/songs/lof${Math.ceil(Math.random()*4)}.mp3`, `${post.id}.mp4`);
+
     }
 
 };
