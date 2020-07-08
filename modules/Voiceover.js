@@ -12,9 +12,10 @@ const textToSpeech = require(`@google-cloud/text-to-speech`);
 const fs = require(`fs`);
 const util = require(`util`);
 const client = new textToSpeech.TextToSpeechClient();
+const shortId = require(`shortid`);
 
-async function TTS(text, name) {
-    const output = `tmp/${name}.mp3`;
+async function TTS(text) {
+    const output = `tmp/${shortId.generate()}.mp3`;
     const [response] = await client.synthesizeSpeech({
         input: {text: text},
         voice: {languageCode: `en-US`, ssmlGender: `MALE`},
@@ -29,15 +30,18 @@ module.exports = {
 
     submission: async function (submission) {
         const introduction = `${submission.subreddit.replace(`/`, ` slash `)} by ${submission.author}.`;
-        return await TTS(introduction + submission.title, submission.id);
+        return await TTS(introduction + submission.title);
     },
 
     comment: async function (comment) {
         const filenames = [];
-        const paragraphs = comment.paragraphs.concat(comment.replies[0].paragraphs);
 
-        for (let i=0; i<paragraphs.length; ++i) {
-            const filename = await TTS(paragraphs[i], `${comment.id}-${i}`);
+        let texts = comment.paragraphs;
+        if (comment.replies.length > 0)
+            texts.push(comment.replies[0].paragraphs);
+
+        for (let i=0; i<texts.length; ++i) {
+            const filename = await TTS(texts[i]);
             filenames.push(filename);
             await new Promise(resolve => setTimeout(resolve, 500));
         }
