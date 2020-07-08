@@ -9,8 +9,13 @@
 */
 
 const ffmpeg = require(`fluent-ffmpeg`);
+const shortId = require(`shortid`);
 
-const merge = (clips, output) => {
+const transition = `resources/videos/glitch.mp4`;
+const backgroundMusic = `resources/sounds/lofi1.mp3`;
+
+function merge (...clips) {
+    const output = `tmp/${shortId.generate()}.mp4`;
     const video = new ffmpeg();
     for (const clip of clips) video.addInput(clip);
     return new Promise(resolve => {
@@ -18,23 +23,24 @@ const merge = (clips, output) => {
     });
 }
 
-const backgroundMusic = (file, output) => {
+function music (target, audio) {
+    const output = `${shortId.generate()}.mp4`;
 	const video = new ffmpeg();
-	video.addInput(`tmp/chunks.mp4`);
-	video.addInput(file);
+	video.addInput(target);
+	video.addInput(audio);
 	video.addOptions([
         `-filter_complex [0:a]aformat=fltp:44100:stereo,apad[0a];[1]aformat=fltp:44100:stereo,volume=0.2[1a];[0a][1a]amerge[a]`,
         `-map 0:v`, `-map [a]`, `-ac 2`, `-shortest`
     ]);
 	return new Promise(resolve => {
-        video.save(output).on(`end`, () => resolve());
+        video.save(output).on(`end`, () => resolve(output));
     });
 }
 
 module.exports = {
 
     make: function (screenshot, narration) {
-        const output = `tmp/${Date.now()}.mp4`;
+        const output = `tmp/${shortId.generate()}.mp4`;
         const video = new ffmpeg();
         video.addInput(screenshot);
         video.loop();
@@ -53,43 +59,13 @@ module.exports = {
         });
     },
 
-    edit: async function (clips) {
+    smartMerge: async (clips) => {
+        return await clips.reduce(async (last, clip) => {
+            return merge(await last, clip)
+        });
+    },
 
-        // smart merge
-        // add music
-        
-        await create(post.id);
-        await merge([`tmp/${post.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${post.id}-glitch.mp4`);
-
-        const files = [`tmp/${post.id}-glitch.mp4`];
-
-        let cuts;
-        for (const comment of comments) {
-
-            cuts = [];
-            const iterations = comment.paragraphs.length + (comment.reply ? comment.reply.paragraphs.length : 0);
-            for (let i=0; i<iterations; ++i) {
-                let cut = await create(`${comment.id}-${i}`);
-                cuts.push(cut);
-            }
-
-            await merge(cuts, `tmp/${comment.id}.mp4`);
-            await merge([`tmp/${comment.id}.mp4`, `resources/videos/glitch.mp4`], `tmp/${comment.id}-glitch.mp4`);
-
-            clips.push(`tmp/${comment.id}-glitch.mp4`);
-
-        }
-
-        let n = 0;
-        const chunks = [];
-        for (let i=0; i<clips.length; i+=6, ++n) {
-            await merge(clips.slice(i, i+6), `tmp/chunk${n}.mp4`);
-            chunks.push(`tmp/chunk${n}.mp4`);
-        }
-
-        await merge(chunks, `tmp/chunks.mp4`);
-        await backgroundMusic(`resources/songs/lof${Math.ceil(Math.random()*4)}.mp3`, `${post.id}.mp4`);
-
-    }
+    glitch: async (clip) => await merge(clip, transition),
+    music:  async (clip) => await music(clip, backgroundMusic),
 
 };
