@@ -12,66 +12,80 @@ const Reddit = require(`./modules/Reddit.js`);
 const Screenshot = require(`./modules/Screenshot.js`);
 const Voiceover = require(`./modules/Voiceover.js`);
 const Video = require(`./modules/Video.js`);
+const EventEmitter = require('events');
+const fs = require(`fs`);
 
-module.exports = {
+module.exports = new EventEmitter();
 
-    /**
-     * Configure authentification parameters
-     * for Reddit.
-     * 
-     * @param {Object} configuration The configuration object
-     */
-    config: Reddit.config,
+/**
+ * Configure authentification parameters
+ * for Reddit.
+ * 
+ * @param {Object} configuration The configuration object
+ */
+module.exports.config = Reddit.config;
 
-    /**
-     * Make a video from a Reddit submission ID.
-     * 
-     * @param {String} id ID of a Reddit submission.
-     * @param {Number} n  Number of comments in the video.
-     * 
-     * @return {Promise<String>} Path to the generated video file.
-     */
-    make: async function (id, n) {
+/**
+ * Make a video from a Reddit submission ID.
+ * 
+ * @param {String} id ID of a Reddit submission.
+ * @param {Number} n  Number of comments in the video.
+ * 
+ * @return {Promise<String>} Path to the generated video file.
+ */
+module.exports.make = async function (id, n) {
 
-        // 1. Fetch the submission
-        const submission = await Reddit.fetch(id);
-        
-        // 2. Make clips
-        const clips = [];
+    this.emit(`start`);
 
-        const screenshot = await Screenshot.submission(submission);
-        const voiceover = await Voiceover.submission(submission);
-        let clip = await Video.make(screenshot, voiceover);
-        clips.push(clip);
+    // 1. Fetch the submission
+    this.emit(`status`, `Fetching the submission`);
+    const submission = await Reddit.fetch(id);
+    
+    // 2. Make clips
+    const clips = [];
+    let clip;
+    n = Math.min(n, submission.comments.length);
 
-        for (let i=0; i<n; ++i) {
+    this.emit(`status`, `Generating clips (${1}/${1+n})`);
+    const screenshot = await Screenshot.submission(submission);
+    const voiceover = await Voiceover.submission(submission);
+    clip = await Video.make(screenshot, voiceover);
+    clip = await Video.glitch(clip);
+    clips.push(clip);
+    
+    for (let i=0; i<n; ++i) {
 
-            const screenshots = await Screenshot.comment(submission.comments[i]);
-            const voiceovers = await Voiceover.comment(submission.comments[i]);
-            
-            assert(screenshots.length === voiceovers.length);
+        this.emit(`status`, `Generating clips (${i+2}/${1+n})`);
+        const screenshots = await Screenshot.comment(submission.comments[i]);
+        const voiceovers = await Voiceover.comment(submission.comments[i]);
+        let temporary = [];
 
-            for (let j=0; j<screenshots.length; ++j) {
-                clip = await Video.make(screenshots[j], voiceovers[j]); // ..
-                clips.push(clip);
-            }
-
+        for (let j=0; j<screenshots.length; ++j) {
+            clip = await Video.make(screenshots[j], voiceovers[j]);
+            temporary.push(clip);
         }
- 
-        // 3. Edit the final video
-        const filename = await Video.edit(clips);
 
-        // 4. Remove temporary files
-        require(`fs`).readdir(`tmp`, (err, files) => {
-            if (err) throw err;
-            for (const file of files) {
-                fs.unlink(`tmp/${file}`, err => {
-                    if (err) throw err;
-                });
-            }
-        });
-
-        return filename;
+        clip = await Video.smartMerge(temporary);
+        clip = await Video.glitch(clip);
+        clips.push(clip);
     }
 
-};
+    // 3. Edit the final video
+    this.emit(`status`, `Editing final video`);
+    const video = await Video.smartMerge(clips);
+    const final_video = await Video.music(video);
+    
+    this.emit(`end`);
+
+    // 4. Remove temporary files
+    fs.readdir(`tmp`, (err, files) => {
+        if (err) throw err;
+        for (const file of files) {
+            fs.unlink(`tmp/${file}`, err => {
+                if (err) throw err;
+            });
+        }
+    });
+    
+    return final_video;
+}
