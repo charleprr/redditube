@@ -10,7 +10,12 @@
     "type": "git",
     "url": "git+https://github.com/charlypoirier/redditube.git"
   },
-  "keywords": [ "reddit", "youtube", "video", "generator" ],
+  "keywords": [
+    "reddit",
+    "youtube",
+    "video",
+    "generator"
+  ],
   "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -18,10 +23,11 @@
   },
   "homepage": "https://github.com/charlypoirier/redditube#readme",
   "dependencies": {
-    "snoowrap": "^1.21.0",
     "@google-cloud/text-to-speech": "^2.3.0",
-    "util": "^0.12.3",
     "canvas": "^2.6.1",
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "shortid": "^2.2.15",
+    "snoowrap": "^1.21.0",
+    "util": "^0.12.3"
   }
 }
