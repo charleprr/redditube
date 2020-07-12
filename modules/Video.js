@@ -10,21 +10,22 @@
 
 const ffmpeg = require(`fluent-ffmpeg`);
 const shortId = require(`shortid`);
+const Voiceover = require("./Voiceover");
 
-const transition = `resources/videos/glitch.mp4`;
-const backgroundMusic = `resources/sounds/lofi1.mp3`;
+const transition = `${__dirname}/../resources/videos/glitch.mp4`;
+const backgroundMusic = `${__dirname}/../resources/sounds/lofi1.mp3`;
 
 function merge (...clips) {
-    const output = `tmp/${shortId.generate()}.mp4`;
+    const output = `${__dirname}/../tmp/${shortId.generate()}.mp4`;
     const video = new ffmpeg();
     for (const clip of clips) video.addInput(clip);
     return new Promise(resolve => {
-        video.mergeToFile(output, `tmp/`).on(`end`, () => resolve(output));
+        video.mergeToFile(output, `${__dirname}/../tmp/`).on(`end`, () => resolve(output));
     });
 }
 
 function music (target, audio) {
-    const output = `${shortId.generate()}.mp4`;
+    const output = `${__dirname}/../${shortId.generate()}.mp4`;
 	const video = new ffmpeg();
 	video.addInput(target);
 	video.addInput(audio);
@@ -39,12 +40,12 @@ function music (target, audio) {
 
 module.exports = {
 
-    make: function (screenshot, narration) {
-        const output = `tmp/${shortId.generate()}.mp4`;
+    make: function (screenshot, voiceover) {
+        const output = `${__dirname}/../tmp/${shortId.generate()}.mp4`;
         const video = new ffmpeg();
         video.addInput(screenshot);
         video.loop();
-        video.addInput(narration);
+        video.addInput(voiceover);
         video.addOption(`-shortest`);
         video.audioCodec(`libmp3lame`);
         video.audioBitrate(128);
