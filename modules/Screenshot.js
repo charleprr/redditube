@@ -16,12 +16,12 @@ let initialized = false;
 let questionMark, upvote, downvote;
 
 async function initialize () {
-    registerFont(`resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
-    registerFont(`resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
-    registerFont(`resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
-    questionMark = await loadImage(`resources/images/questionMark.png`);
-    upvote = await loadImage(`resources/images/upvote.png`);
-    downvote = await loadImage(`resources/images/downvote.png`);
+    registerFont(`${__dirname}/../resources/fonts/IBMPlexSans-Medium.ttf`, {family: `IBMPlexSans Medium`});
+    registerFont(`${__dirname}/../resources/fonts/IBMPlexSans-Regular.ttf`, {family: `IBMPlexSans Regular`});
+    registerFont(`${__dirname}/../resources/fonts/NotoSans-Regular.ttf`, {family: `Noto Sans`});
+    questionMark = await loadImage(`${__dirname}/../resources/images/questionMark.png`);
+    upvote = await loadImage(`${__dirname}/../resources/images/upvote.png`);
+    downvote = await loadImage(`${__dirname}/../resources/images/downvote.png`);
     initialized = true;
 }
 
@@ -50,7 +50,7 @@ function wrapText (ctx, text, x, y, maxWidth, lineHeight) {
         }
     }
     y -= lineHeight;
-    //if (y > 1080) throw `Comment has gone out of frame.`; // reset canvas and start back from the top?? (genius idea)
+    if (y > 1080) throw new Error(`Comment is too long to fit.`);
     return y;
 }
 
@@ -80,7 +80,7 @@ function printCommentBody (x, y, text, ctx) {
 }
 
 function save (canvas) {
-    const output = `tmp/${shortId.generate()}.png`;
+    const output = `${__dirname}/../tmp/${shortId.generate()}.png`;
     return new Promise(resolve => {
         const out = fs.createWriteStream(output);
         const stream = canvas.createPNGStream();
