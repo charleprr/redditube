@@ -57,17 +57,16 @@ module.exports.make = async function (id, n) {
     clip = await Video.glitch(clip);
     clips.push(clip);
     
-    let offset = 0;
     for (let i=0; i<n; ++i) {
 
         this.emit(`status`, `Generating clip ${i+2} out of ${1+n}`);
         let screenshots, voiceovers;
         try {
-            screenshots = await Screenshot.comment(submission.comments[i+offset]);
-            voiceovers = await Voiceover.comment(submission.comments[i+offset]);
+            screenshots = await Screenshot.comment(submission.comments[i]);
+            voiceovers = await Voiceover.comment(submission.comments[i]);
         } catch (e) {
-            console.err(e.message);
-            offset++;
+            console.error(e.message);
+            submission.comments.splice(i--, 1);
             continue;
         }
 
@@ -91,7 +90,7 @@ module.exports.make = async function (id, n) {
     this.emit(`end`);
 
     // 4. Remove temporary files
-    fs.readdir(`tmp`, (err, files) => {
+    fs.readdir(`${__dirname}/tmp`, (err, files) => {
         if (err) throw err;
         for (const file of files) {
             fs.unlink(`${__dirname}/tmp/${file}`, err => {

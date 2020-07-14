@@ -38,7 +38,7 @@ module.exports = {
 
         let texts = comment.paragraphs;
         if (comment.replies.length > 0)
-            texts.concat(comment.replies[0].paragraphs);
+            texts = texts.concat(comment.replies[0].paragraphs);
 
         for (let i=0; i<texts.length; ++i) {
             const filename = await TTS(texts[i]);
