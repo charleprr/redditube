@@ -145,7 +145,7 @@ module.exports = {
 
         if (comment.replies.length > 0) {
 
-            const reply = comment.replies[0];
+            let reply = comment.replies[0];
             await printCommentHeader(x+offset, lastLine+offset, reply, ctx);
 
             lastLine += 132;
