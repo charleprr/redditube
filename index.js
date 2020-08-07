@@ -37,10 +37,10 @@ module.exports.config = Reddit.config;
 module.exports.make = async function (id, n) {
 
     this.emit(`start`);
-
+    
     // 1. Fetch the submission
     this.emit(`status`, `Fetching the submission`);
-    const submission = await Reddit.fetch(id);
+    const submission = Reddit.clean(await Reddit.fetch(id));
     
     // 2. Make clips
     const tmp = path.join(__dirname, `/tmp`);
@@ -50,7 +50,7 @@ module.exports.make = async function (id, n) {
     let clip;
     n = Math.min(n, submission.comments.length);
 
-    this.emit(`status`, `Generating clip 1 out of ${1+n}`);
+    this.emit(`status`, `Generating introduction clip`);
     const screenshot = await Screenshot.submission(submission);
     const voiceover = await Voiceover.submission(submission);
     clip = await Video.make(screenshot, voiceover);
@@ -59,13 +59,13 @@ module.exports.make = async function (id, n) {
     
     for (let i=0; i<n; ++i) {
 
-        this.emit(`status`, `Generating clip ${i+2} out of ${1+n}`);
+        this.emit(`status`, `Generating comment clip ${i+1} out of ${n}`);
         let screenshots, voiceovers;
         try {
             screenshots = await Screenshot.comment(submission.comments[i]);
             voiceovers = await Voiceover.comment(submission.comments[i]);
         } catch (e) {
-            console.error(e.message);
+            console.error(`Error: ${e.message}`);
             submission.comments.splice(i--, 1);
             continue;
         }
@@ -82,9 +82,9 @@ module.exports.make = async function (id, n) {
     }
 
     // 3. Edit the final video
-    this.emit(`status`, `Editing final video`);
+    this.emit(`status`, `Merging all clips`);
     const video = await Video.smartMerge(clips);
-    this.emit(`status`, `Almost there`);
+    this.emit(`status`, `Adding background music`);
     const final_video = await Video.music(video);
     
     this.emit(`end`);

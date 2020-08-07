@@ -9,6 +9,7 @@
 */
 
 const Snoowrap = require(`snoowrap`);
+const { comment } = require("./Screenshot");
 let reddit = null;
 
 const format = submission => ({
@@ -67,6 +68,21 @@ module.exports = {
         } else {
             throw new Error(`Reddit authentification has not been configured!`);
         }
+    },
+
+    clean: function (submission) {
+        for (let i=0; i<submission.comments.length; ++i) {
+            if (submission.comments[i].body === "[deleted]") {
+                submission.comments.splice(i, 1);
+            } else {
+                for (let j=0; j<submission.comments[i].replies.length; ++j) {
+                    if (submission.comments[i].replies[j].body === "[deleted]") {
+                        submission.comments[i].replies.splice(j, 1);
+                    }
+                }
+            }
+        }
+        return submission;
     }
 
 }
