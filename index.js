@@ -62,10 +62,11 @@ module.exports.make = async function (id, n) {
         this.emit(`status`, `Generating comment clip ${i+1} out of ${n}`);
         let screenshots, voiceovers;
         try {
+            if (!submission.comments[i]) break;
             screenshots = await Screenshot.comment(submission.comments[i]);
             voiceovers = await Voiceover.comment(submission.comments[i]);
         } catch (e) {
-            console.error(`Error: ${e.message}`);
+            console.error(e.stack);
             submission.comments.splice(i--, 1);
             continue;
         }
