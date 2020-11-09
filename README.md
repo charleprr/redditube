@@ -1,21 +1,22 @@
+> WIP: This README is not complete yet.
+
 <p align="center">
-  <img src="./resources/images/redditube.png" width="70"><br/>
-  <b>Redditube</b><br/>
-  A video generator from Reddit submissions and comments
+    <img src="./resources/images/redditube.png" width="96"/><br/>
 </p>
+<h1 align="center">
+    Redditube
+</h1>
 
-### Installation
+## Overview
+A video generator from Reddit submissions and comments!
 
+## Installation
 You will need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.<br/>
 Then, run `npm i redditube`.
-
-### Importation
 
 ```js
 const Redditube = require(`redditube`);
 ```
-
-### Configuration
 
 You will need to configure Reddit authentification before generating videos.<br/>
 This can be done with one of those ways:
