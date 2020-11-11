@@ -1,6 +1,6 @@
 /**
  * @name Redditube
- * @version 1.0.0
+ * @version 1.0.1
  * 
  * A video generator from Reddit
  * submissions and comments.
@@ -9,7 +9,7 @@
 */
 
 const Snoowrap = require(`snoowrap`);
-const { comment } = require("./Screenshot");
+const { comment } = require("./screenshot");
 let reddit = null;
 
 const format = submission => ({

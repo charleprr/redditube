@@ -1,6 +1,6 @@
 /**
  * @name Redditube
- * @version 1.0.0
+ * @version 1.0.1
  * 
  * A video generator from Reddit
  * submissions and comments.
@@ -10,7 +10,7 @@
 
 const ffmpeg = require(`fluent-ffmpeg`);
 const shortId = require(`shortid`);
-const Voiceover = require("./Voiceover");
+const Voiceover = require("./voiceover");
 
 const transition = `${__dirname}/../resources/videos/glitch.mp4`;
 const backgroundMusic = `${__dirname}/../resources/sounds/lofi1.mp3`;
