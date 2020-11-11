@@ -1,6 +1,6 @@
 /**
  * @name Redditube
- * @version 1.0.0
+ * @version 1.0.1
  * 
  * A video generator from Reddit
  * submissions and comments.
@@ -8,10 +8,10 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 
-const Reddit = require(`./modules/Reddit.js`);
-const Screenshot = require(`./modules/Screenshot.js`);
-const Voiceover = require(`./modules/Voiceover.js`);
-const Video = require(`./modules/Video.js`);
+const Reddit = require(`./libs/reddit.js`);
+const Screenshot = require(`./libs/screenshot.js`);
+const Voiceover = require(`./libs/voiceover.js`);
+const Video = require(`./libs/video.js`);
 const EventEmitter = require('events');
 const fs = require(`fs`);
 const path = require('path');
