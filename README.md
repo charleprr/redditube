@@ -21,7 +21,7 @@ Here is an example made with this generator: https://www.youtube.com/watch?v=yea
 
 ## Installation
 
-### 1. Reddit
+### Reddit
 - Create a [Reddit account](https://www.reddit.com/register/) (if you don't already have one)
 - Create a [Reddit app](https://ssl.reddit.com/prefs/apps/)
     - Give it a name (e.g. "Redditube")
@@ -29,23 +29,24 @@ Here is an example made with this generator: https://www.youtube.com/watch?v=yea
 
 We will need the **Client ID** (random string under the app name) and **Client secret** later.
 
-### 2. Text-to-speech API
-- Go to [Google Cloud](https://console.cloud.google.com/projectcreate) and create a new project
-- Go to [Google Cloud](https://console.cloud.google.com/apis/credentials/serviceaccountkey) and create a service account for that project
+### Text-to-speech API
+- Create a [new Google Cloud project](https://console.cloud.google.com/projectcreate)
+- Create a [new Google Cloud service account](https://console.cloud.google.com/apis/credentials/serviceaccountkey) for that project
 - Go to [their text-to-speech API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com) and enable it
 - Download your key credentials in JSON format
 
-**Linux:** Run `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"` in a terminal<br/>
-**Windows:** Run `SET GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json` in command prompt
+Linux: Run `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"` in a terminal<br/>
+Windows: Run `SET GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json` in command prompt
 
 This gives Redditube an access to Google Cloud's free text-to-speech API.
 
-### 3. Dependencies
-Make sure you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.<br/>
-Run `npm install redditube`.
+### Dependencies
+Make sure you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.
+
+Run `npm install redditube`
 
 If `canvas` fails to install, check that you have those libraries installed.
-- pixeman (`apt-get install libpixman-1-dev`)
+- pixman (`apt-get install libpixman-1-dev`)
 - cairo (`apt-get install libcairo2-dev`)
 - pango (`apt-get install libsdl-pango-dev`)
 - libjpeg (`apt-get install libjpeg-dev`)
