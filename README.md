@@ -1,9 +1,9 @@
 <p align="center">
-    <img src="./resources/images/redditube.png" width="96"/><br/>
+    <img src="./resources/images/redditube.png" width="64"/><br/>
 </p>
 <p align="center">
     <a href="https://github.com/charlypoirier/redditube/releases">
-        <img alt="Release" src="https://img.shields.io/badge/Release-v1.0.2-1389BF.svg">
+        <img alt="Release" src="https://img.shields.io/badge/Release-v1.0.3-1389BF.svg">
     </a>
     <a href="https://github.com/charlypoirier/redditube/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/License-MIT-458831.svg">
@@ -17,7 +17,7 @@
 
 ## Overview
 A video generator from Reddit submissions and comments!<br/>
-Here is an example made with this generator: https://www.youtube.com/watch?v=yeaZMAtF_Yc
+Check out [this example video](https://www.youtube.com/watch?v=yeaZMAtF_Yc), made with Redditube.
 
 ## Installation
 
@@ -25,32 +25,26 @@ Here is an example made with this generator: https://www.youtube.com/watch?v=yea
 - Create a [Reddit account](https://www.reddit.com/register/) (if you don't already have one)
 - Create a [Reddit app](https://ssl.reddit.com/prefs/apps/)
     - Give it a name (e.g. "Redditube")
-    - Set the redirect URI to `http://127.0.0.1/`
+    - Set the redirect URI to "http://127.0.0.1/"
 
-We will need the **Client ID** (random string under the app name) and **Client secret** later.
+We will need the Client ID (random string under the app name) and Client secret later.
 
 ### Text-to-speech API
 - Create a [new Google Cloud project](https://console.cloud.google.com/projectcreate)
 - Create a [new Google Cloud service account](https://console.cloud.google.com/apis/credentials/serviceaccountkey) for that project
-- Go to [their text-to-speech API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com) and enable it
-- Download your key credentials in JSON format
+- Download your service account key credentials
+- Enable Google Cloud's [Text-to-speech API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com)
 
-Linux: Run `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"` in a terminal<br/>
-Windows: Run `SET GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json` in command prompt
+Windows: Run `SET GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json`<br/>
+Linux: Run `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"`
 
 This gives Redditube an access to Google Cloud's free text-to-speech API.
 
 ### Dependencies
-Make sure you have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.
+You will need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.<br/>
+Run `npm install redditube`.
 
-Run `npm install redditube`
-
-If `canvas` fails to install, check that you have those libraries installed.
-- pixman (`apt-get install libpixman-1-dev`)
-- cairo (`apt-get install libcairo2-dev`)
-- pango (`apt-get install libsdl-pango-dev`)
-- libjpeg (`apt-get install libjpeg-dev`)
-- libgif (`apt-get isntall libgif-dev`)
+If `canvas` fails to install, install those libraries: `apt-get install libpixman-1-dev libcairo2-dev libsdl-pango-dev libjpeg-dev libgif-dev`
 
 Then, run `npm install redditube` again.
 
@@ -86,17 +80,24 @@ Redditube.make(`f9cufu`, 5).then(path_to_video => {
 // Await the promise (inside an asynchronous function)
 const path_to_video = await Redditube.make(`f9cufu`, 5);
 ```
-> `Redditube.make()` takes a submission ID and an optional number of comments to include in the video (15 by default).
 
-> The submission ID can be found in the URL when browsing Reddit submissions.<br/>
-> The submission ID used in the above examples (`f9cufu`) is taken from the URL of [this Reddit submission](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/).
+`Redditube.make()` takes 2 arguments:
+- a submission ID
+- a number of comments to make the video with
+
+The submission ID that was used above can be found in [this Reddit submission](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/)'s URL.
 
 ## Contributing
-Feel free to star, fork, create issues and pull requests on GitHub!<br/>
-Here are some ideas I've had:
-- Simplify the installation process (e.g. simpler text-to-speech API)
-- Take a Reddit URL instead of the submission ID
-- Thumbnail generation
+Feel free to star the repository, create issues and make pull requests on [GitHub](https://github.com/charlypoirier/redditube).
+
+A list of things I would like to improve:
+- Simplifying the installation process
+- Taking a Reddit URL instead of the submission ID
+- Adding an outro
+
+A list of ideas:
+- Generate thumbnails (for YouTube)
+- ...open a pull request, add your ideas!
 
 ## License
 Released under the [MIT](https://github.com/charlypoirier/redditube/blob/master/LICENSE) license.
