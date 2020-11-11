@@ -9,7 +9,6 @@
 */
 
 const Snoowrap = require(`snoowrap`);
-const { comment } = require("./screenshot");
 let reddit = null;
 
 const format = submission => ({
