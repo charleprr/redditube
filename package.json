@@ -1,36 +1,31 @@
 {
-    "name": "redditube",
-    "version": "1.0.0",
-    "description": "A video generator from Reddit submissions and comments",
-    "main": "index.js",
-    "scripts": {
-        "test": "node tests.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/charlypoirier/redditube.git"
-    },
-    "keywords": [
-        "reddit",
-        "youtube",
-        "video",
-        "generator"
-    ],
-    "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/charlypoirier/redditube/issues"
-    },
-    "homepage": "https://github.com/charlypoirier/redditube#readme",
-    "dependencies": {
-        "@google-cloud/text-to-speech": "^2.3.0",
-        "canvas": "^2.6.1",
-        "fluent-ffmpeg": "^2.1.2",
-        "shortid": "^2.2.15",
-        "snoowrap": "^1.21.0",
-        "util": "^0.12.3"
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
-    }
+  "name": "redditube",
+  "version": "1.0.1",
+  "description": "A video generator from Reddit submissions and comments",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charlypoirier/redditube.git"
+  },
+  "keywords": [
+    "reddit",
+    "youtube",
+    "video",
+    "generator"
+  ],
+  "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/charlypoirier/redditube/issues"
+  },
+  "homepage": "https://github.com/charlypoirier/redditube#readme",
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^2.3.0",
+    "canvas": "^2.6.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "shortid": "^2.2.15",
+    "snoowrap": "^1.21.0",
+    "util": "^0.12.3"
+  },
+  "devDependencies": {}
 }
