@@ -1,9 +1,6 @@
 <p align="center">
     <img src="./resources/images/redditube.png" width="96"/><br/>
 </p>
-<h1 align="center">
-    Redditube
-</h1>
 <p align="center">
     <a href="https://github.com/charlypoirier/redditube/releases">
         <img alt="Release" src="https://img.shields.io/badge/Release-v1.0.1-1389BF.svg">
