@@ -1,6 +1,6 @@
 {
   "name": "redditube",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A video generator from Reddit submissions and comments",
   "main": "index.js",
   "repository": {
