@@ -3,7 +3,7 @@
 </p>
 <p align="center">
     <a href="https://github.com/charlypoirier/redditube/releases">
-        <img alt="Release" src="https://img.shields.io/badge/Release-v1.0.3-1389BF.svg">
+        <img alt="Release" src="https://img.shields.io/badge/Release-v1.1.0-1389BF.svg">
     </a>
     <a href="https://github.com/charlypoirier/redditube/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/License-MIT-458831.svg">
