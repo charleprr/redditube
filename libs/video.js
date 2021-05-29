@@ -18,6 +18,7 @@ function merge (...clips) {
     const output = `${__dirname}/../tmp/${shortId.generate()}.mp4`;
     const video = new ffmpeg();
     for (const clip of clips) video.addInput(clip);
+    video.addOption("-vsync 2");
     return new Promise(resolve => {
         video.mergeToFile(output, `${__dirname}/../tmp/`).on(`end`, () => resolve(output));
     });
@@ -60,12 +61,12 @@ module.exports = {
     },
 
     smartMerge: async (clips) => {
-        return await clips.reduce(async (last, clip) => {
+        return clips.reduce(async (last, clip) => {
             return merge(await last, clip)
         });
     },
 
-    glitch: async (clip) => await merge(clip, transition),
-    music:  async (clip) => await music(clip, backgroundMusic),
+    glitch: async (clip) => merge(clip, transition),
+    music:  async (clip) => music(clip, backgroundMusic),
 
 };
