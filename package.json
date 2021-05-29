@@ -20,11 +20,12 @@
   },
   "homepage": "https://github.com/charlypoirier/redditube#readme",
   "dependencies": {
-    "@google-cloud/text-to-speech": "^2.3.0",
     "canvas": "^2.6.1",
     "fluent-ffmpeg": "^2.1.2",
-    "shortid": "^2.2.15",
-    "snoowrap": "^1.21.0",
+    "got": "^11.8.2",
+    "md5": "^2.3.0",
+    "shortid": "^2.2.16",
+    "snoowrap": "^1.23.0",
     "util": "^0.12.3"
   },
   "devDependencies": {}

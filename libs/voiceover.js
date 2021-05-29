@@ -8,21 +8,27 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 
-const textToSpeech = require(`@google-cloud/text-to-speech`);
-const fs = require(`fs`);
-const util = require(`util`);
-const client = new textToSpeech.TextToSpeechClient();
 const shortId = require(`shortid`);
+const md5 = require(`md5`);
+const got = require(`got`);
+const stream = require(`stream`);
+const {promisify} = require(`util`);
+const pipeline = promisify(stream.pipeline);
+const fs = require(`fs`);
 
 async function TTS(text) {
     const output = `${__dirname}/../tmp/${shortId.generate()}.mp3`;
-    const [response] = await client.synthesizeSpeech({
-        input: {text: text},
-        voice: {languageCode: `en-US`, ssmlGender: `MALE`},
-        audioConfig: {audioEncoding: `MP3`},
-    });
-    const writeFile = util.promisify(fs.writeFile);
-    await writeFile(output, response.audioContent, `binary`);
+    const params = new URLSearchParams();
+    params.set(`EID`, `4`);
+    params.set(`LID`, `1`);
+    params.set(`VID`, `5`);
+    params.set(`TXT`, text);
+    params.set(`IS_UTF8`, `1`);
+    params.set(`EXT`, `mp3`);
+    params.set(`ACC`, `5883747`);
+    params.set(`CS`, md5(`415${text}1mp35883747uetivb9tb8108wfj`));
+    const url = `https://cache-a.oddcast.com/tts/gen.php?` + params.toString();
+    await pipeline(got.stream(url), fs.createWriteStream(output));
     return output;
 }
 

@@ -24,32 +24,16 @@ Check out [this example video](https://www.youtube.com/watch?v=yeaZMAtF_Yc), mad
 ### Reddit
 - Create a [Reddit account](https://www.reddit.com/register/) (if you don't already have one)
 - Create a [Reddit app](https://ssl.reddit.com/prefs/apps/)
-    - Give it a name (e.g. "Redditube")
+    - Give it a name
     - Set the redirect URI to "http://127.0.0.1/"
 
 We will need the Client ID (random string under the app name) and Client secret later.
-
-### Text-to-speech API
-- Create a [new Google Cloud project](https://console.cloud.google.com/projectcreate)
-- Create a [new Google Cloud service account](https://console.cloud.google.com/apis/credentials/serviceaccountkey) for that project
-- Download your service account key credentials
-- Enable Google Cloud's [Text-to-speech API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com)
-
-Windows: Run `SET GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json`<br/>
-Linux: Run `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"`
-
-This gives Redditube an access to Google Cloud's free text-to-speech API.
 
 ### Dependencies
 You will need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.<br/>
 Run `npm install redditube`.
 
-If `canvas` fails to install, install those libraries: `apt-get install libpixman-1-dev libcairo2-dev libsdl-pango-dev libjpeg-dev libgif-dev`
-
-Then, run `npm install redditube` again.
-
 ## Usage
-
 ```js
 const Redditube = require(`redditube`);
 
@@ -89,15 +73,6 @@ The submission ID that was used above can be found in [this Reddit submission](h
 
 ## Contributing
 Feel free to star the repository, create issues and make pull requests on [GitHub](https://github.com/charlypoirier/redditube).
-
-A list of things I would like to improve:
-- Simplifying the installation process
-- Taking a Reddit URL instead of the submission ID
-- Adding an outro
-
-A list of ideas:
-- Generate thumbnails (for YouTube)
-- ...open a pull request, add your ideas!
 
 ## License
 Released under the [MIT](https://github.com/charlypoirier/redditube/blob/master/LICENSE) license.
