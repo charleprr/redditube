@@ -6,6 +6,3 @@ tmp/
 
 # Videos generated at the root
 *.mp4
-
-# Tests
-tests.js

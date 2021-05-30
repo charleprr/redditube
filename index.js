@@ -15,6 +15,7 @@ const Video = require(`./libs/video.js`);
 const EventEmitter = require('events');
 const fs = require(`fs`);
 const path = require('path');
+const { type } = require('os');
 
 module.exports = new EventEmitter();
 
@@ -84,7 +85,7 @@ module.exports.make = async function (id, n) {
 
     // 3. Edit the final video
     this.emit(`status`, `Merging all clips`);
-    const video = await Video.smartMerge(clips);
+    const video = await Video.merge(clips); // await Video.smartMerge(clips)
     this.emit(`status`, `Adding background music`);
     const final_video = await Video.music(video);
     
