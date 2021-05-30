@@ -20,18 +20,16 @@ A video generator from Reddit submissions and comments!<br/>
 Check out [this example video](https://www.youtube.com/watch?v=yeaZMAtF_Yc), made with Redditube.
 
 ## Installation
+`npm install redditube`
 
-### Reddit
-- Create a [Reddit account](https://www.reddit.com/register/) (if you don't already have one)
+You will need to have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.<br/>
+You will also need Reddit credentials.
+- Create a [Reddit account](https://www.reddit.com/register/), if you don't already have one
 - Create a [Reddit app](https://ssl.reddit.com/prefs/apps/)
     - Give it a name
     - Set the redirect URI to "http://127.0.0.1/"
 
 We will need the Client ID (random string under the app name) and Client secret later.
-
-### Dependencies
-You will need to install [FFmpeg](https://ffmpeg.org/download.html) on your machine.<br/>
-Run `npm install redditube`.
 
 ## Usage
 ```js
