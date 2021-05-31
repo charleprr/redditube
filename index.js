@@ -35,7 +35,7 @@ module.exports.config = Reddit.config;
  * 
  * @return {Promise<String>} Path to the generated video file.
  */
-module.exports.make = async function (id, n) {
+module.exports.make = async function (id, n=5) {
 
     this.emit(`start`);
     

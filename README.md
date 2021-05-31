@@ -52,7 +52,7 @@ Redditube.on("end", () => console.log("End event!"));
 
 // Option 1
 // Use .then() and .catch()
-Redditube.make(`f9cufu`, 5).then(path_to_video => {
+Redditube.make(`f9cufu`, 3).then(path_to_video => {
     console.log(path_to_video);
 }).catch(error => {
     console.log(error);
@@ -60,14 +60,11 @@ Redditube.make(`f9cufu`, 5).then(path_to_video => {
 
 // Option 2
 // Await the promise (inside an asynchronous function)
-const path_to_video = await Redditube.make(`f9cufu`, 5);
+const path_to_video = await Redditube.make(`f9cufu`, 3);
 ```
 
-`Redditube.make()` takes 2 arguments:
-- a submission ID
-- a number of comments to make the video with
-
-The submission ID that was used above can be found in [this Reddit submission](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/)'s URL.
+You only need a submission ID, that can be found in the URL of a post on Reddit (e.g. `"f9cufu"` from [this url](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/)).<br/>
+You can also specify the number of comments you want to include in the video (e.g. `3`), the default is 5.
 
 ## Contributing
 Feel free to star the repository, create issues and make pull requests on [GitHub](https://github.com/charlypoirier/redditube).
