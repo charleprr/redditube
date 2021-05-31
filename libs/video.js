@@ -17,10 +17,10 @@ const backgroundMusic = `${__dirname}/../resources/sounds/lofi1.mp3`;
 function merge (...clips) {
     const output = `${__dirname}/../tmp/${shortId.generate()}.mp4`;
     const video = new ffmpeg();
-    for (const clip of clips) {/*console.log(clip);*/ video.addInput(clip)};
+    for (const clip of clips) video.addInput(clip);
     video.addOption(`-vsync 2`);
     return new Promise(resolve => {
-        video.mergeToFile(output, `${__dirname}/../tmp/`).on('start', c => console.log(c)).on(`end`, () => resolve(output));
+        video.mergeToFile(output, `${__dirname}/../tmp/`).on(`end`, () => resolve(output));
     });
 }
 
