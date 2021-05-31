@@ -11,10 +11,9 @@
 const ffmpeg = require(`fluent-ffmpeg`);
 const shortId = require(`shortid`);
 const fs = require('fs');
-var musicFile = fs.readdirSync(`${__dirname}/../resources/sounds/`)
 
+const songs = fs.readdirSync(`${__dirname}/../resources/sounds/`);
 const transition = `${__dirname}/../resources/videos/glitch.mp4`;
-const backgroundMusic = `${__dirname}/../resources/sounds/` + musicFile[Math.floor(Math.random() * musicFile.length)];
 
 function merge (...clips) {
     const output = `${__dirname}/../tmp/${shortId.generate()}.mp4`;
@@ -26,8 +25,9 @@ function merge (...clips) {
     });
 }
 
-function music (target, audio) {
+function music (target) {
     const output = `${__dirname}/../${shortId.generate()}.mp4`;
+    const audio = `${__dirname}/../resources/sounds/${songs[Math.floor(Math.random()*songs.length)]}`
 	const video = new ffmpeg();
 	video.addInput(target);
 	video.addInput(audio);
@@ -70,6 +70,6 @@ module.exports = {
 
     merge: async (clips) => merge(...clips), // Temporary
     glitch: async (clip) => merge(clip, transition),
-    music:  async (clip) => music(clip, backgroundMusic),
+    music:  async (clip) => music(clip),
 
 };
