@@ -21,7 +21,7 @@ function merge (...clips) {
     for (const clip of clips) video.addInput(clip);
     video.addOption(`-vsync 2`);
     return new Promise(resolve => {
-        video.mergeToFile(output, `${__dirname}/../tmp/`).on(`end`, () => resolve(output));
+        video.mergeToFile(output, `${__dirname}/../tmp/`).on(`end`, () => resolve(output)).on(`start`, c=>console.log);
     });
 }
 
@@ -63,12 +63,16 @@ module.exports = {
     },
 
     smartMerge: async (clips) => {
-        return clips.reduce(async (last, clip) => {
-            return merge(await last, clip)
-        });
+        let output = await merge(...clips.splice(0, 10));
+        while (clips.length) {
+            output = await merge(...[output, ...clips.splice(0, 10)]);
+        }
+        return output;
+        // return clips.reduce(async (last, clip) => {
+        //     return merge(await last, clip)
+        // });
     },
 
-    merge: async (clips) => merge(...clips), // Temporary
     glitch: async (clip) => merge(clip, transition),
     music:  async (clip) => music(clip),
 
