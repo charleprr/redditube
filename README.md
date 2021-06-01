@@ -63,7 +63,7 @@ Redditube.make(`f9cufu`, 3).then(path_to_video => {
 const path_to_video = await Redditube.make(`f9cufu`, 3);
 ```
 
-You only need a submission ID, that can be found in the URL of a post on Reddit (e.g. `"f9cufu"` from [this url](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/)).<br/>
+You only need a submission ID, that can be found in the URL of a post on Reddit (e.g. `f9cufu` from [this url](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/)).<br/>
 You can also specify the number of comments you want to include in the video (e.g. `3`), the default is 5.
 
 ## Contributing
