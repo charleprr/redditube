@@ -17,7 +17,7 @@
 
 ## Overview
 A video generator from Reddit submissions and comments!<br/>
-Check out [this example video](https://www.youtube.com/watch?v=yeaZMAtF_Yc), made with Redditube.
+Check out [this example video](https://www.youtube.com/watch?v=CDSohzteAaw), made with Redditube.
 
 ## Installation
 `npm install redditube`
