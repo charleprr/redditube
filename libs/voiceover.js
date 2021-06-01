@@ -35,7 +35,7 @@ async function TTS(text) {
 module.exports = {
 
     submission: async function (submission) {
-        const introduction = `${submission.subreddit.replace(`/`, ` slash `)} by ${submission.author}.`;
+        const introduction = `${submission.subreddit.replace(`/`, ` slash `)} by ${submission.author}. `;
         return await TTS(introduction + submission.title);
     },
 

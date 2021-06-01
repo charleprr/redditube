@@ -63,8 +63,11 @@ module.exports = {
     },
 
     smartMerge: async (clips) => {
-        let output = await merge(...clips.splice(0, 10));
+ 	console.log(`Starting smartMerge on ${clips.length} clips`);
+	console.log(`Merging 0-10`)
+	let output = await merge(...clips.splice(0, 10));
         while (clips.length) {
+	    console.log("Merging 0-10 more");
             output = await merge(...[output, ...clips.splice(0, 10)]);
         }
         return output;

@@ -67,7 +67,6 @@ module.exports.make = async function (id, n=5) {
             screenshots = await Screenshot.comment(submission.comments[i]);
             voiceovers = await Voiceover.comment(submission.comments[i]);
         } catch (e) {
-            console.error(e.stack);
             submission.comments.splice(i--, 1);
             continue;
         }
