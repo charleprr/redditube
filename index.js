@@ -60,6 +60,7 @@ module.exports.make = async function (id, n=5) {
     
     for (let i=0; i<n; ++i) {
 
+        n = Math.min(n, submission.comments.length);
         this.emit(`status`, `Generating comment clip ${i+1} out of ${n}`);
         let screenshots, voiceovers;
         try {

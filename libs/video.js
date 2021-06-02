@@ -68,9 +68,6 @@ module.exports = {
             output = await merge(...[output, ...clips.splice(0, 10)]);
         }
         return output;
-        // return clips.reduce(async (last, clip) => {
-        //     return merge(await last, clip)
-        // });
     },
 
     glitch: async (clip) => merge(clip, transition),

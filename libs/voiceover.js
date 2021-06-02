@@ -49,7 +49,7 @@ module.exports = {
         for (let i=0; i<texts.length; ++i) {
             const filename = await TTS(texts[i]);
             filenames.push(filename);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
         return filenames;
