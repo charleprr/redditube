@@ -1,4 +1,4 @@
-## Overview
+# Redditube
 A video generator from Reddit submissions and comments!<br/>
 Check out [this example video](https://www.youtube.com/watch?v=CDSohzteAaw), made with Redditube.
 
