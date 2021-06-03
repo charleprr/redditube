@@ -1,4 +1,9 @@
 # Redditube
+
+[![NPM Version](http://img.shields.io/npm/v/redditube.svg?style=flat)](https://www.npmjs.org/package/redditube)
+[![NPM Downloads](https://img.shields.io/npm/dm/redditube.svg?style=flat)](https://npmcharts.com/compare/redditube?minimal=true)
+[![LICENSE](https://img.shields.io/badge/license-MIT-de4328.svg)](https://nodejs.org/)
+
 A video generator from Reddit submissions and comments!<br/>
 Check out [this example video](https://www.youtube.com/watch?v=CDSohzteAaw), made with Redditube.
 
