@@ -4,8 +4,8 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/redditube.svg?style=flat)](https://npmcharts.com/compare/redditube?minimal=true)
 [![LICENSE](https://img.shields.io/badge/license-MIT-de4328.svg)](https://nodejs.org/)
 
-A video generator from Reddit submissions and comments!<br/>
-Check out [this example video](https://www.youtube.com/watch?v=CDSohzteAaw), made with Redditube.
+A video generator from Reddit submissions and comments.<br/>
+Watch [this video](https://www.youtube.com/watch?v=CDSohzteAaw) made with Redditube.
 
 ## Installation
 `npm install redditube`
