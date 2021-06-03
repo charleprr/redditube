@@ -11,7 +11,10 @@
     "reddit",
     "youtube",
     "video",
-    "generator"
+    "generator",
+    "ffmpeg",
+    "canvas",
+    "tts"
   ],
   "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
   "license": "MIT",
