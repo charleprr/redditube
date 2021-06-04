@@ -1,8 +1,8 @@
-# Dependency directories
+# Dependencies
 node_modules/
 
-# Temporary directories
+# Temporary files
 tmp/
 
-# Videos generated at the root
+# Generated videos
 *.mp4
