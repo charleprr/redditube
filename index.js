@@ -1,7 +1,5 @@
 /**
  * @name Redditube
- * @version 1.1.2
- * 
  * A video generator from Reddit
  * submissions and comments.
  * 
