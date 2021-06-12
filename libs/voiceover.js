@@ -6,11 +6,11 @@
  * @copyright (C) 2020 by Charly Poirier
 */
 
-const shortId = require(`shortid`);
 const md5 = require(`md5`);
 const got = require(`got`);
 const stream = require(`stream`);
-const {promisify} = require(`util`);
+const shortId = require(`shortid`);
+const { promisify } = require(`util`);
 const pipeline = promisify(stream.pipeline);
 const fs = require(`fs`);
 

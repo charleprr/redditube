@@ -69,11 +69,11 @@ module.exports = {
 
     clean: function (submission) {
         for (let i=0; i<submission.comments.length; ++i) {
-            if (submission.comments[i].body === "[removed]") {
+            if (submission.comments[i].body === `[removed]`) {
                 submission.comments.splice(i, 1);
             } else {
                 for (let j=0; j<submission.comments[i].replies.length; ++j) {
-                    if (submission.comments[i].replies[j].body === "[removed]") {
+                    if (submission.comments[i].replies[j].body === `[removed]`) {
                         submission.comments[i].replies.splice(j, 1);
                     }
                 }

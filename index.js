@@ -10,9 +10,9 @@ const Reddit = require(`./libs/reddit.js`);
 const Screenshot = require(`./libs/screenshot.js`);
 const Voiceover = require(`./libs/voiceover.js`);
 const Video = require(`./libs/video.js`);
-const EventEmitter = require('events');
+const EventEmitter = require(`events`);
+const path = require(`path`);
 const fs = require(`fs`);
-const path = require('path');
 
 module.exports = new EventEmitter();
 
