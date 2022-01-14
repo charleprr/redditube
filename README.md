@@ -5,7 +5,7 @@
 [![LICENSE](https://img.shields.io/badge/license-MIT-de4328.svg)](https://github.com/charlypoirier/redditube/blob/master/LICENSE)
 
 A video generator from Reddit submissions and comments.<br/>
-Watch [this video](https://www.youtube.com/watch?v=CDSohzteAaw) made with Redditube.
+Watch [this video](https://streamable.com/7jqjup) made with Redditube.
 
 ## Installation
 `npm install redditube`
