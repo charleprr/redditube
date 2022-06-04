@@ -3,7 +3,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/redditube.svg?style=flat)](https://npmcharts.com/compare/redditube?minimal=true)
 [![LICENSE](https://img.shields.io/badge/license-MIT-de4328.svg)](https://github.com/charlypoirier/redditube/blob/master/LICENSE)
 
-A video generator from Reddit submissions and comments.<br/>
+A video generator from Reddit posts and comments.<br/>
 Watch [this video](https://streamable.com/7jqjup) made with Redditube.
 
 ## Installation

@@ -1,7 +1,7 @@
 /**
  * @name Redditube
  * A video generator from Reddit
- * submissions and comments.
+ * posts and comments.
  * 
  * @copyright (C) 2020 by Charly Poirier
 */
