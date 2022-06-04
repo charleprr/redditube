@@ -1,5 +1,4 @@
 # Redditube
-
 [![NPM Version](http://img.shields.io/npm/v/redditube.svg?style=flat)](https://www.npmjs.org/package/redditube)
 [![NPM Downloads](https://img.shields.io/npm/dm/redditube.svg?style=flat)](https://npmcharts.com/compare/redditube?minimal=true)
 [![LICENSE](https://img.shields.io/badge/license-MIT-de4328.svg)](https://github.com/charlypoirier/redditube/blob/master/LICENSE)
@@ -8,7 +7,11 @@ A video generator from Reddit submissions and comments.<br/>
 Watch [this video](https://streamable.com/7jqjup) made with Redditube.
 
 ## Installation
+
 `npm install redditube`
+
+Got installation errors? Install the following packages and try again.<br/>
+`sudo apt install build-essential libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev`
 
 You will need to have [FFmpeg](https://ffmpeg.org/download.html) installed on your machine.<br/>
 You will also need Reddit credentials.
@@ -35,20 +38,20 @@ Redditube.config({
 // Log start, status, errors and end events (optional)
 Redditube.on("start", () => console.log("Start event!"));
 Redditube.on("status", status => console.log(status));
-Redditube.on("error",  error => console.log(error));
+Redditube.on("error", error => console.error(error));
 Redditube.on("end", () => console.log("End event!"));
 
 // Option 1
 // Use .then() and .catch()
-Redditube.make("f9cufu", 3).then(path_to_video => {
-    console.log(path_to_video);
+Redditube.make("f9cufu", 3).then(videoPath => {
+    console.log(videoPath);
 }).catch(error => {
     console.log(error);
 });
 
 // Option 2
 // Await a promise (inside an asynchronous function)
-const path_to_video = await Redditube.make("f9cufu", 3);
+const videoPath = await Redditube.make("f9cufu", 3);
 ```
 
 The above example makes a video from [this post](https://www.reddit.com/r/AskReddit/comments/f9cufu/what_are_some_ridiculous_history_facts/) (see **f9cufu** in the URL) and with **3** comments.
