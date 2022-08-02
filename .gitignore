@@ -6,3 +6,4 @@ tmp/
 
 # Generated videos
 *.mp4
+!resources/videos/*.mp4
