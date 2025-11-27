@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/charlypoirier/redditube.git"
+    "url": "git+https://github.com/charleprr/redditube.git"
   },
   "keywords": [
     "reddit",
@@ -16,12 +16,12 @@
     "canvas",
     "tts"
   ],
-  "author": "Charly POIRIER <pro.poiriercharly@gmail.com>",
+  "author": "charle",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/charlypoirier/redditube/issues"
+    "url": "https://github.com/charleprr/redditube/issues"
   },
-  "homepage": "https://github.com/charlypoirier/redditube#readme",
+  "homepage": "https://github.com/charleprr/redditube#readme",
   "dependencies": {
     "canvas": "^2.6.1",
     "fluent-ffmpeg": "^2.1.2",
